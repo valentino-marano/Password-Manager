@@ -1,5 +1,9 @@
 language: java
 # skip installation step
 install: true
+sudo: true
+cache:
+  directories:
+  - $HOME/.m2
 script: 
-  - mvn -f com.valentino.tap.password_manager/pom.xml clean verify -Pjacoco coveralls:report org.pitest:pitest-maven:mutationCoverage sonar:sonar
+  - mvn -f com.valentino.tap.password_manager/pom.xml clean verify -Pjacoco coveralls:report org.pitest:pitest-maven:mutationCoverage
