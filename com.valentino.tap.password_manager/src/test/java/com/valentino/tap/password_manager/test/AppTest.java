@@ -1,8 +1,10 @@
-package com.valentino.tap.password_manager;
+package com.valentino.tap.password_manager.test;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.valentino.tap.password_manager.app.App;
 
 /**
  * Unit test for simple App.
