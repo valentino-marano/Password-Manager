@@ -1,0 +1,34 @@
+package com.valentino.tap.password_manager.app.db;
+
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import org.jongo.Jongo;
+import org.jongo.MongoCollection;
+
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.valentino.tap.password_manager.app.Password;
+
+public class MongoDatabaseWrapper implements Database {
+
+	private MongoCollection passwords;
+
+	public MongoDatabaseWrapper(MongoClient mc) {
+		DB db = mc.getDB("PasswordManager");
+		Jongo jongo = new Jongo(db);
+		passwords = jongo.getCollection("password");
+	}
+
+	public List<Password> getAllPasswords() {
+		Iterable<Password> iterable = passwords.find().as(Password.class);
+		return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+	}
+	
+	public List<Password> getPasswordsByWebSite(String website) {
+		Iterable<Password> iterable = passwords.find("{website: #}", Pattern.compile(website)).as(Password.class);
+		return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+	}
+}
