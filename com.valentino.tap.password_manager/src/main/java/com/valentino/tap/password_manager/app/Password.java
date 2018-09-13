@@ -20,19 +20,19 @@ public class Password {
 	}
 	
 	public Password() {};
-/*
+
 	public String getWebsite() {
 		return this.website;
 	}
-
+/*
 	public void setWebsite(String website) {
 		this.website = website;
 	}
-
+*/
 	public String getUsername() {
 		return this.username;
 	}
-
+/*
 	public void setUsername(String username) {
 		this.username = username;
 	}

@@ -18,4 +18,16 @@ public class PasswordManager {
 	public List<Password> getPasswordsByWebSite(String id) {
 		return database.getPasswordsByWebSite(id);
 	}
+	
+	public boolean addPassword(Password password) {
+		if (existsPassword(password))
+			return false;
+		
+		database.save(password);
+		return true;	
+	}
+
+	public boolean existsPassword(Password password) {
+		return database.existsPassword(password);
+	}
 }

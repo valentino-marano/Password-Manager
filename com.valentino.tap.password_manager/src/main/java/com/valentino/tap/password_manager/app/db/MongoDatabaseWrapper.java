@@ -31,4 +31,13 @@ public class MongoDatabaseWrapper implements Database {
 		Iterable<Password> iterable = passwords.find("{website: #}", Pattern.compile(website)).as(Password.class);
 		return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
 	}
+
+	@Override
+	public void save(Password password) {
+		passwords.save(password);
+	}
+
+	public boolean existsPassword(Password password) {
+		return passwords.find("{website: #, username: #}", password.getWebsite(), password.getUsername()).as(Password.class).hasNext();
+	}
 }

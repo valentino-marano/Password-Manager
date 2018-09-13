@@ -6,8 +6,11 @@ import com.valentino.tap.password_manager.app.Password;
 
 public interface Database {
 
-	List<Password> getAllPasswords();
+	public List<Password> getAllPasswords();
 
-	List<Password> getPasswordsByWebSite(String website);
+	public List<Password> getPasswordsByWebSite(String website);
+	
+	public void save(Password password);
 
+	public boolean existsPassword(Password password);
 }
