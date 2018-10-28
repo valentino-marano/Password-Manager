@@ -12,7 +12,7 @@ addons:
     packages:
     - metacity
 
-sudo: true
+sudo: false
 
 cache:
   directories:
