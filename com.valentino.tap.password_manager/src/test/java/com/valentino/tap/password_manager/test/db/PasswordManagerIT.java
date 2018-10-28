@@ -10,6 +10,7 @@ import com.mongodb.MongoClient;
 import com.valentino.tap.password_manager.app.Password;
 import com.valentino.tap.password_manager.app.db.Database;
 import com.valentino.tap.password_manager.app.db.MongoDatabaseWrapper;
+import com.valentino.tap.password_manager.test.db.AbstractTest;
 
 public class PasswordManagerIT extends AbstractTest {
 	

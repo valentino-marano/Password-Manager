@@ -13,18 +13,28 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.jars>/home/valentino/Scuola/Università/Magistrale/Tecniche Avanzate di Programmazione/Progetto/Password Manager/com.valentino.tap.password_manager/lib</project.build.jars>
 		<!-- For Unit tests -->
 		<jacoco.data.file>${project.build.directory}/coverage-reports/jacoco.exec</jacoco.data.file>
 		<jacoco.report.path>${project.reporting.outputDirectory}/jacoco-ut</jacoco.report.path>
 		<!-- End Unit tests -->
+
 		<!-- For Integration tests -->
 		<jacoco.data.it.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.data.it.file>
 		<jacoco.report.it.path>${project.reporting.outputDirectory}/jacoco-it</jacoco.report.it.path>
 		<!-- End Integration tests -->
+
 		<sonar.language>java</sonar.language>
 		<sonar.jacoco.reportPath>${jacoco.data.file}</sonar.jacoco.reportPath>
 		<sonar.jacoco.itReportPath>${jacoco.data.it.file}</sonar.jacoco.itReportPath>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>maven-eclipse-repo</id>
+			<url>http://maven-eclipse.github.io/maven</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -71,6 +81,23 @@
 			<artifactId>testcontainers</artifactId>
 			<version>1.1.7</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>swt-bot-swt-finder</artifactId>
+			<version>2.7.0</version>
+			<scope>system</scope>
+			<systemPath>${project.build.jars}/org.eclipse.swtbot.swt.finder_2.7.0.201806111355.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>swt</artifactId>
+			<version>3.2.1-v3235e</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.swt.gtk.linux</groupId>
+			<artifactId>x86_64</artifactId>
+			<version>3.3.0-v3346</version>
 		</dependency>
 	</dependencies>
 
@@ -136,6 +163,38 @@
 				</plugins>
 			</build>
 		</profile>
+		
+		<profile>
+			<id>runJarWithDep</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.5.0</version>
+						<executions>
+							<execution>
+								<id>runJarWithDependencies</id>
+								<phase>integration-test</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<executable>java</executable>
+							<arguments>
+								<argument>-jar</argument>
+								<argument>${project.build.directory}/${project.artifactId}-${project.version}-all.jar</argument>
+							</arguments>
+						</configuration>
+					</plugin>
+				</plugins>	
+			</build>
+		</profile>
 	</profiles>
 
 	<build>
@@ -155,6 +214,8 @@
 				<configuration>
 					<!-- Sets the VM argument line used when unit tests are run. -->
 					<argLine>${surefireArgLine}</argLine>
+					<useUIHarness>true</useUIHarness>
+					<useUIThread>false</useUIThread>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -237,34 +298,14 @@
 							<shadedArtifactAttached>true</shadedArtifactAttached>
 							<shadedClassifierName>all</shadedClassifierName>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>${project.groupId}.${project.name}.app.Application</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.5.0</version>
-				<executions>
-					<execution>
-						<id>runJarWithDependencies</id>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<executable>java</executable>
-					<arguments>
-						<argument>-jar</argument>
-						<argument>${project.build.directory}/${project.artifactId}-${project.version}-all.jar</argument>
-					</arguments>
-				</configuration>
 			</plugin>
 		</plugins>
 

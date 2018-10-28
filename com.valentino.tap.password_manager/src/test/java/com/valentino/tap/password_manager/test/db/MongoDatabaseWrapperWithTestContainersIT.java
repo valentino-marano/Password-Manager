@@ -11,8 +11,7 @@ public class MongoDatabaseWrapperWithTestContainersIT extends AbstractMongoDatab
 
 	@SuppressWarnings("rawtypes")
 	@ClassRule
-	public static GenericContainer mongo =
-	new GenericContainer("mongo:latest").withExposedPorts(27017);
+	public static GenericContainer mongo =	new GenericContainer("mongo:latest").withExposedPorts(27017);
 
 	@Override
 	public MongoClient createMongoClient() throws UnknownHostException {
