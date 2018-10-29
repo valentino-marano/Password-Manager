@@ -13,7 +13,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.jars>/home/valentino/Scuola/Università/Magistrale/Tecniche Avanzate di Programmazione/Progetto/Password Manager/com.valentino.tap.password_manager/lib</project.build.jars>
 		<!-- For Unit tests -->
 		<jacoco.data.file>${project.build.directory}/coverage-reports/jacoco.exec</jacoco.data.file>
 		<jacoco.report.path>${project.reporting.outputDirectory}/jacoco-ut</jacoco.report.path>
@@ -28,13 +27,6 @@
 		<sonar.jacoco.reportPath>${jacoco.data.file}</sonar.jacoco.reportPath>
 		<sonar.jacoco.itReportPath>${jacoco.data.it.file}</sonar.jacoco.itReportPath>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>maven-eclipse-repo</id>
-			<url>http://maven-eclipse.github.io/maven</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -87,7 +79,7 @@
 			<artifactId>swt-bot-swt-finder</artifactId>
 			<version>2.7.0</version>
 			<scope>system</scope>
-			<systemPath>${project.build.jars}/org.eclipse.swtbot.swt.finder_2.7.0.201806111355.jar</systemPath>
+			<systemPath>${project.basedir}/lib/org.eclipse.swtbot.swt.finder_2.7.0.201806111355.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
