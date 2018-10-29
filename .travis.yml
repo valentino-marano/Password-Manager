@@ -26,4 +26,4 @@ before_script:
 
 script:
   - export
-  - mvn -f com.valentino.tap.password_manager/pom.xml clean verify -Pjacoco report:coveralls
+  - mvn -f com.valentino.tap.password_manager/pom.xml clean verify -Pjacoco coveralls:report
