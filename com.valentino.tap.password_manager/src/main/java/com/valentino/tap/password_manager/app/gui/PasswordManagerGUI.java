@@ -22,14 +22,15 @@ public class PasswordManagerGUI {
 	private Table table;
 	private PasswordManager passwordManager;
 	private Shell shell;
+	private Password selected;
 	static final Logger LOGGER = Logger.getLogger(PasswordManagerGUI.class);
+
 
 	public PasswordManagerGUI(PasswordManager passwordManager) {
 		this.passwordManager = passwordManager;
 	}
 
 	public void open() {
-		Display.getDefault();
 		createGUI();
 		shell.open();
 		shell.pack();
@@ -47,46 +48,70 @@ public class PasswordManagerGUI {
 			item.setText(1, password.getUsername());
 			item.setText(2, password.getPassword());
 		}
-		for (int i = 0; i < Labels.columnHeaders.length; i++) {
+		for (int i = 0; i < Labels.COLUMN_HEADERS.length; i++) {
 			table.getColumn(i).pack();
 		}
 	}
 
 	private void createGUI() {
 		shell = new Shell();
-		shell.setText(Labels.frameTitle);
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 3;
-
+		shell.setText(Labels.FRAME_TITLE);
 		shell.setBounds(300, 300, 750, 500);
 		shell.setMinimumSize(750, 500);
-		shell.setLayout(gridLayout);
+		shell.setLayout(new GridLayout(4, false));
 
 		Button addButton = new Button(shell, SWT.PUSH);
-		addButton.setText(Labels.addLabel);
-		addButton.setToolTipText(Labels.addHint);
-
-		Button editButton = new Button(shell, SWT.PUSH);
-		editButton.setText(Labels.editLabel);
-		editButton.setToolTipText(Labels.editHint);
-
-		Button deleteButton = new Button(shell, SWT.PUSH);
-		deleteButton.setText(Labels.deleteLabel);
-		deleteButton.setToolTipText(Labels.deleteHint);
-
-		/*
-		 Button refreshButton = new Button(shell, SWT.PUSH);
-
-		refreshButton.setText(Labels.refreshLabel);
-		refreshButton.setToolTipText(Labels.refreshHint);
-		refreshButton.addSelectionListener(new SelectionAdapter() {
-
+		addButton.setText(Labels.ADD_LABEL);
+		addButton.setToolTipText(Labels.ADD_HINT);
+		addButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {			
-				refresh();				
+			public void widgetSelected(SelectionEvent e) {
+				EditDialog edit = new EditDialog(passwordManager, null, shell);
+				edit.open();
+				edit.eventLoop(Display.getDefault());
+				refresh();
 			}
 		});
-		 */
+
+		Button editButton = new Button(shell, SWT.PUSH);
+		editButton.setText(Labels.EDIT_LABEL);
+		editButton.setToolTipText(Labels.EDIT_HINT);
+		editButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (selected != null) {
+					EditDialog edit = new EditDialog(passwordManager, selected, shell);
+					edit.open();
+					edit.eventLoop(Display.getDefault());
+					refresh();
+				}
+			}
+		});
+
+		Button deleteButton = new Button(shell, SWT.PUSH);
+		deleteButton.setText(Labels.DELETE_LABEL);
+		deleteButton.setToolTipText(Labels.DELETE_HINT);
+		deleteButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (selected != null) {
+					passwordManager.deletePassword(selected);
+					refresh();
+				}
+			}
+		});
+
+		Button refreshButton = new Button(shell, SWT.PUSH);
+		refreshButton.setText(Labels.REFRESH_LABEL);
+		refreshButton.setToolTipText(Labels.REFRESH_HINT);
+		refreshButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {			
+				refresh();
+				selected = null;
+			}
+		});
+
 		GridData gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.verticalAlignment = GridData.FILL;
@@ -97,15 +122,15 @@ public class PasswordManagerGUI {
 		table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		for (int i = 0; i < Labels.columnHeaders.length; i++) {
+		for (int i = 0; i < Labels.COLUMN_HEADERS.length; i++) {
 			TableColumn column = new TableColumn(table, SWT.NULL);
-			column.setText(Labels.columnHeaders[i]);
+			column.setText(Labels.COLUMN_HEADERS[i]);
 		}
 		refresh();
 		table.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				Password selected = ((Password) event.item.getData());
+				selected = ((Password) event.item.getData());
 				LOGGER.info("Selected Password " +  selected.getWebsite() + " " + selected.getUsername());
 			}
 		});

@@ -30,4 +30,15 @@ public class PasswordManager {
 	public boolean existsPassword(Password password) {
 		return database.existsPassword(password);
 	}
+	
+	public boolean deletePassword(Password password) {
+		if (!existsPassword(password))
+			return false;
+		database.delete(password);
+		return true;
+	}
+
+	public void updatePassword(Password password) {
+		database.update(password);	
+	}
 }

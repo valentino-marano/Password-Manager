@@ -105,6 +105,11 @@
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
 						<version>0.7.7.201606060606</version>
+						<configuration>
+							<excludes>
+								<exclude>**/*/Application.class</exclude>
+							</excludes>
+						</configuration>
 						<executions>
 							<!-- For Unit tests -->
 							<execution>
@@ -148,6 +153,10 @@
 								<configuration>
 									<dataFile>${jacoco.data.it.file}</dataFile>
 									<outputDirectory>${jacoco.report.it.path}</outputDirectory>
+									<excludes>
+										<exclude>**/com/valentino/tap/password_manager/app/gui/*</exclude>
+										<exclude>**/com/valentino/tap/password_manager/app/Application.class</exclude>
+									</excludes>															
 								</configuration>
 							</execution>
 						</executions>
@@ -155,7 +164,7 @@
 				</plugins>
 			</build>
 		</profile>
-		
+
 		<profile>
 			<id>runJarWithDep</id>
 			<activation>
@@ -184,7 +193,7 @@
 							</arguments>
 						</configuration>
 					</plugin>
-				</plugins>	
+				</plugins>
 			</build>
 		</profile>
 	</profiles>

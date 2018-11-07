@@ -40,4 +40,14 @@ public class MongoDatabaseWrapper implements Database {
 	public boolean existsPassword(Password password) {
 		return passwords.find("{website: #, username: #}", password.getWebsite(), password.getUsername()).as(Password.class).hasNext();
 	}
+
+	@Override
+	public void delete(Password password) {
+		passwords.remove(password.getKey());		
+	}
+
+	@Override
+	public void update(Password password) {
+		passwords.update(password.getKey()).with(password);		
+	}
 }

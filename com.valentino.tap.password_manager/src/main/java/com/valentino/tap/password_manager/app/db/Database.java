@@ -13,4 +13,8 @@ public interface Database {
 	public void save(Password password);
 
 	public boolean existsPassword(Password password);
+
+	public void delete(Password password);
+
+	public void update(Password password);
 }

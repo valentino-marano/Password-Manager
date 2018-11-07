@@ -32,4 +32,13 @@ public class MongoTester implements SUT {
 	public boolean existsPassword(Password password) {
 		return mongoDatabase.existsPassword(password);
 	}
+
+	@Override
+	public void updatePassword(Password password) {
+		mongoDatabase.update(password);		
+	}
+
+	public void delete(Password password) {
+		mongoDatabase.delete(password);		
+	}
 }

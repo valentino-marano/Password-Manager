@@ -1,5 +1,6 @@
 package com.valentino.tap.password_manager.test.db;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.net.UnknownHostException;
@@ -24,9 +25,20 @@ public abstract class AbstractMongoDatabaseWrapperTest extends AbstractTest {
 	
 	@Test
 	public void testPasswordIsSaved() {
-		Password password = new Password("sito1", "user1", "password1");
+		Password password = new Password("site1", "user1", "password1");
 		((MongoTester) sut).save(password);
 		assertTrue(sut.existsPassword(password));
+	}
+	
+	@Test
+	public void testPasswordIsDeleted() {
+		Password password1 = new Password("site1", "user1", "password1");
+		Password password2 = new Password("site2", "user2", "password2");
+		mongoTestHelper.addPassword(password1);
+		mongoTestHelper.addPassword(password2);
+		((MongoTester) sut).delete(password1);
+		assertFalse(sut.existsPassword(password1));
+		assertTrue(sut.existsPassword(password2));
 	}
 
 }

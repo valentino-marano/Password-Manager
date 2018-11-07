@@ -11,4 +11,6 @@ public interface SUT {
 	List<Password> getPasswordsByWebSite(String website);
 
 	boolean existsPassword(Password password);
+	
+	void updatePassword(Password password);
 }

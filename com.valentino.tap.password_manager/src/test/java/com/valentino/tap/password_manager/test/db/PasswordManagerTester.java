@@ -32,4 +32,13 @@ public class PasswordManagerTester implements SUT {
 	public boolean existsPassword(Password password) {
 		return passwordManager.existsPassword(password);
 	}
+
+	@Override
+	public void updatePassword(Password password) {
+		passwordManager.updatePassword(password);		
+	}
+	
+	public boolean deletePassword(Password password) {
+		return passwordManager.deletePassword(password);
+	}
 }

@@ -34,8 +34,21 @@ public class PasswordManagerIT extends AbstractTest {
 	
 	@Test
 	public void testSavePasswordWhenExists() {
-		mongoTestHelper.addPassword("site1", "user1", "password1");
+		mongoTestHelper.addPassword(new Password("site1", "user1", "password1"));
 		Password password = new Password("site1", "user1", "password1");
 		assertFalse(((PasswordManagerTester) sut).addPassword(password));
+	}
+	
+	@Test
+	public void testDeletePasswordWhenExists() {
+		Password password = new Password("site1", "user1", "password1");
+		mongoTestHelper.addPassword(password);
+		assertTrue(((PasswordManagerTester) sut).deletePassword(password));
+	}
+	
+	@Test
+	public void testDeletePasswordWhenNotExists() {
+		Password password = new Password("site1", "user1", "password1");
+		assertFalse(((PasswordManagerTester) sut).deletePassword(password));
 	}
 }

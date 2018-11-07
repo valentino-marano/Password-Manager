@@ -18,7 +18,7 @@ public class MongoTestHelper {
 		passwords = jongo.getCollection("password");
 	}
 
-	public void addPassword(String website, String username, String password) {
-		passwords.insert(new Password(website, username, password));		
+	public void addPassword(Password password) {
+		passwords.insert(password);		
 	}
 }
