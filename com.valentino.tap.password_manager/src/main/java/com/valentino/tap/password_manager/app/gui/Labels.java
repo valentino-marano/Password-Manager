@@ -24,6 +24,7 @@ public class Labels {
 	public static final String ADD_HINT = "Opens pop-up to add a new password";
 	public static final String EDIT_HINT = "Opens pop-up to edit a password";
 	public static final String REFRESH_HINT = "Reloads Passwords from Database";
+	public static final String SEARCH_HINT = "Search by website or by username";
 	
 	// Messages
 	public static final String EXISTS_MSG = "Cannot save this password, it already exists in Database";

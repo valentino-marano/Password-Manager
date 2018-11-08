@@ -13,4 +13,6 @@ public interface SUT {
 	boolean existsPassword(Password password);
 	
 	void updatePassword(Password password);
+
+	List<Password> searchPasswords(String pattern);
 }

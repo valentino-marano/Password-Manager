@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -14,6 +15,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
+
 import com.valentino.tap.password_manager.app.Password;
 import com.valentino.tap.password_manager.app.PasswordManager;
 
@@ -22,6 +25,7 @@ public class PasswordManagerGUI {
 	private Table table;
 	private PasswordManager passwordManager;
 	private Shell shell;
+	private Text searchField;
 	private Password selected;
 	static final Logger LOGGER = Logger.getLogger(PasswordManagerGUI.class);
 
@@ -39,7 +43,11 @@ public class PasswordManagerGUI {
 	}
 
 	private void refresh () {
-		List<Password> passwords = passwordManager.getAllPasswords();
+		List<Password> passwords;
+		if (searchField.getText().isEmpty())
+			passwords = passwordManager.getAllPasswords();
+		else
+			passwords = passwordManager.getSearchedPasswords(searchField.getText());			
 		table.removeAll();
 		for (Password password : passwords) {
 			TableItem item = new TableItem(table, SWT.NULL);
@@ -58,7 +66,7 @@ public class PasswordManagerGUI {
 		shell.setText(Labels.FRAME_TITLE);
 		shell.setBounds(300, 300, 750, 500);
 		shell.setMinimumSize(750, 500);
-		shell.setLayout(new GridLayout(4, false));
+		shell.setLayout(new GridLayout(5, false));
 
 		Button addButton = new Button(shell, SWT.PUSH);
 		addButton.setText(Labels.ADD_LABEL);
@@ -109,13 +117,21 @@ public class PasswordManagerGUI {
 				selected = null;
 			}
 		});
+		
+		GridData gridDataSearch = new GridData();
+		gridDataSearch.horizontalAlignment = GridData.FILL;
+		gridDataSearch.grabExcessHorizontalSpace = true;
+		searchField = new Text(shell, SWT.SEARCH | SWT.BORDER);
+		searchField.setLayoutData(gridDataSearch);
+		searchField.setToolTipText(Labels.SEARCH_HINT);
+		searchField.addModifyListener((ModifyEvent arg0) -> refresh());
 
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.verticalAlignment = GridData.FILL;
-		gridData.horizontalSpan = 5;
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.grabExcessVerticalSpace = true;
+		GridData gridDataTable = new GridData();
+		gridDataTable.horizontalAlignment = GridData.FILL;
+		gridDataTable.verticalAlignment = GridData.FILL;
+		gridDataTable.horizontalSpan = 5;
+		gridDataTable.grabExcessHorizontalSpace = true;
+		gridDataTable.grabExcessVerticalSpace = true;
 
 		table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
@@ -132,7 +148,7 @@ public class PasswordManagerGUI {
 				LOGGER.info("Selected Password " +  selected.getWebsite() + " " + selected.getUsername());
 			}
 		});
-		table.setLayoutData(gridData);
+		table.setLayoutData(gridDataTable);
 	}
 
 	public void eventLoop(Display display) {

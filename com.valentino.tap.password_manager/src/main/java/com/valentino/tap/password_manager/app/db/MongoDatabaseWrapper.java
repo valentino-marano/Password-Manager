@@ -50,4 +50,10 @@ public class MongoDatabaseWrapper implements Database {
 	public void update(Password password) {
 		passwords.update(password.getKey()).with(password);		
 	}
+
+	@Override
+	public List<Password> getSearchedPasswords(String pattern) {
+		Iterable<Password> iterable = passwords.find("{$or:[{website: #}, {username: #}]}", Pattern.compile(pattern), Pattern.compile(pattern)).as(Password.class);
+		return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+	}
 }

@@ -98,4 +98,37 @@ public abstract class AbstractTest {
 		assertEquals("user2", allPasswords.get(0).getUsername());
 		assertEquals("password2", allPasswords.get(0).getPassw());
 	}
+
+	@Test
+	public void testSearchPasswordsWhenThereAreNoMatchingPasswords() {
+		mongoTestHelper.addPassword(new Password("site1", "user1", "password1"));
+		mongoTestHelper.addPassword(new Password("site2", "user2", "password2"));
+		assertEquals(0, sut.searchPasswords("zzz").size());
+	}
+
+	@Test
+	public void testSearchPasswordsWebsiteMatching() {
+		mongoTestHelper.addPassword(new Password("site1", "user1", "password1"));
+		mongoTestHelper.addPassword(new Password("site2", "user2", "password2"));
+		mongoTestHelper.addPassword(new Password("website1", "user1", "password1"));
+		mongoTestHelper.addPassword(new Password("website2", "user2", "password2"));
+		assertEquals(2, sut.searchPasswords("bs").size());
+	}
+
+	@Test
+	public void testSearchPasswordsUsernameMatching() {
+		mongoTestHelper.addPassword(new Password("site1", "utente1", "password1"));
+		mongoTestHelper.addPassword(new Password("site2", "user2", "password2"));
+		mongoTestHelper.addPassword(new Password("website1", "user1", "password1"));
+		mongoTestHelper.addPassword(new Password("website2", "utente2", "password2"));
+		assertEquals(2, sut.searchPasswords("ten").size());
+	}
+
+	@Test
+	public void testSearchPasswordsMixMatching() {
+		mongoTestHelper.addPassword(new Password("site1", "user1", "password1"));
+		mongoTestHelper.addPassword(new Password("sito2", "site1", "password2"));
+		mongoTestHelper.addPassword(new Password("sito3", "user2", "password2"));
+		assertEquals(2, sut.searchPasswords("ite").size());
+	}
 }

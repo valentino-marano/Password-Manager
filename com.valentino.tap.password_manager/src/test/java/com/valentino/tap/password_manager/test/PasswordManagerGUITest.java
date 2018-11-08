@@ -96,6 +96,7 @@ public class PasswordManagerGUITest {
 		bot.buttonWithTooltip(Labels.DELETE_HINT);
 		bot.button(Labels.REFRESH_LABEL);
 		bot.buttonWithTooltip(Labels.REFRESH_HINT);
+		bot.textWithTooltip(Labels.SEARCH_HINT);
 		bot.table();
 	}
 	
@@ -278,5 +279,45 @@ public class PasswordManagerGUITest {
 		assertEquals(2, bot.table().rowCount());
 		assertEquals("sito1", bot.table().cell(0, 0));
 		assertEquals("sito3", bot.table().cell(1, 0));
+	}
+	
+	@Test
+	public void testSearchNotFound() {
+		passwordManager.addPassword(new Password("site1", "user1", "password1"));
+		bot.textWithTooltip(Labels.SEARCH_HINT).setText("we");
+		assertEquals(0, bot.table().rowCount());
+	}
+	
+	@Test
+	public void testSearchByWebsite() {
+		passwordManager.addPassword(new Password("site1", "user1", "password1"));
+		passwordManager.addPassword(new Password("site2", "user2", "password2"));
+		passwordManager.addPassword(new Password("sito3", "utente3", "password3"));
+		bot.textWithTooltip(Labels.SEARCH_HINT).setText("ite");
+		assertEquals(2, bot.table().rowCount());
+		assertEquals("site1", bot.table().cell(0, 0));
+		assertEquals("site2", bot.table().cell(1, 0));
+	}
+	
+	@Test
+	public void testSearchByUser() {
+		passwordManager.addPassword(new Password("site1", "user1", "password1"));
+		passwordManager.addPassword(new Password("site2", "user2", "password2"));
+		passwordManager.addPassword(new Password("site3", "utente3", "password3"));
+		bot.textWithTooltip(Labels.SEARCH_HINT).setText("ser");
+		assertEquals(2, bot.table().rowCount());
+		assertEquals("site1", bot.table().cell(0, 0));
+		assertEquals("site2", bot.table().cell(1, 0));
+	}
+	
+	@Test
+	public void testSearchByWebsiteAndUser() {
+		passwordManager.addPassword(new Password("site1", "user1", "password1"));
+		passwordManager.addPassword(new Password("sito2", "site1", "password2"));
+		passwordManager.addPassword(new Password("sito3", "utente3", "password3"));
+		bot.textWithTooltip(Labels.SEARCH_HINT).setText("ite");
+		assertEquals(2, bot.table().rowCount());
+		assertEquals("site1", bot.table().cell(0, 0));
+		assertEquals("sito2", bot.table().cell(1, 0));
 	}
 }

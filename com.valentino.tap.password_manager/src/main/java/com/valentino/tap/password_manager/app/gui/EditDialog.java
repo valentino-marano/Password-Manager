@@ -64,7 +64,7 @@ public class EditDialog extends Dialog {
 			}
 		});
 	}
-	
+
 	private void setEditMode(Password password) {
 		shell.setText(Labels.EDIT_TITLE);
 		String oldWebsite = password.getWebsite();
@@ -142,8 +142,7 @@ public class EditDialog extends Dialog {
 				okButton.setEnabled(false);
 			else
 				okButton.setEnabled(true);
-		}
-				);
+		});
 
 		websiteField.addModifyListener(fieldListener);
 		userField.addModifyListener(fieldListener);

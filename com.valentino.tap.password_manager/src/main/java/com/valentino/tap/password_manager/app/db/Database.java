@@ -17,4 +17,6 @@ public interface Database {
 	public void delete(Password password);
 
 	public void update(Password password);
+
+	public List<Password> getSearchedPasswords(String text);
 }

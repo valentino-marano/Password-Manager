@@ -41,4 +41,9 @@ public class PasswordManagerTester implements SUT {
 	public boolean deletePassword(Password password) {
 		return passwordManager.deletePassword(password);
 	}
+
+	@Override
+	public List<Password> searchPasswords(String pattern) {
+		return passwordManager.getSearchedPasswords(pattern);
+	}
 }

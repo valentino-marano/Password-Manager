@@ -41,4 +41,8 @@ public class PasswordManager {
 	public void updatePassword(Password password) {
 		database.update(password);	
 	}
+
+	public List<Password> getSearchedPasswords(String text) {
+		return database.getSearchedPasswords(text);
+	}
 }

@@ -41,4 +41,9 @@ public class MongoTester implements SUT {
 	public void delete(Password password) {
 		mongoDatabase.delete(password);		
 	}
+
+	@Override
+	public List<Password> searchPasswords(String pattern) {
+		return mongoDatabase.getSearchedPasswords(pattern);
+	}
 }
