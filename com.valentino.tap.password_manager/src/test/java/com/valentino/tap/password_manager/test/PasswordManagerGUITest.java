@@ -276,7 +276,7 @@ public class PasswordManagerGUITest {
 		bot.table().getTableItem(1).click();
 		bot.button(Labels.DELETE_LABEL).click();
 		assertEquals(2, bot.table().rowCount());
-		assertEquals(bot.table().cell(0, 0), "sito1");
-		assertEquals(bot.table().cell(1, 0), "sito3");
+		assertEquals("sito1", bot.table().cell(0, 0));
+		assertEquals("sito3", bot.table().cell(1, 0));
 	}
 }

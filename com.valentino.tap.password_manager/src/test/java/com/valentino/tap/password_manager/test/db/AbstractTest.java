@@ -90,12 +90,12 @@ public abstract class AbstractTest {
 		mongoTestHelper.addPassword(password);
 		password.setWebsite("site2");
 		password.setUsername("user2");
-		password.setPassword("password2");
+		password.setPassw("password2");
 		sut.updatePassword(password);
 		List<Password> allPasswords = sut.getAllPasswords();
 		assertEquals(1, allPasswords.size());
 		assertEquals("site2", allPasswords.get(0).getWebsite());
 		assertEquals("user2", allPasswords.get(0).getUsername());
-		assertEquals("password2", allPasswords.get(0).getPassword());
+		assertEquals("password2", allPasswords.get(0).getPassw());
 	}
 }

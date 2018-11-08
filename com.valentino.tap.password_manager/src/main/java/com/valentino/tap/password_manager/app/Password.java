@@ -8,19 +8,19 @@ public class Password {
 	
 	private String website;
 	private String username;
-	private String password;
+	private String passw;
 	
 	@MongoId
 	@MongoObjectId
     private String key;
 	
-	public Password(String website, String username, String password) {
+	public Password(String website, String username, String passw) {
 		this.website = website;
 		this.username = username;
-		this.password = password;
+		this.passw = passw;
 	}
 	
-	public Password() {};
+	public Password() {}
 
 	public String getWebsite() {
 		return this.website;
@@ -38,12 +38,12 @@ public class Password {
 		this.username = username;
 	}
 
-	public String getPassword() {
-		return this.password;
+	public String getPassw() {
+		return this.passw;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPassw(String passw) {
+		this.passw = passw;
 	}
 
 	public ObjectId getKey() {

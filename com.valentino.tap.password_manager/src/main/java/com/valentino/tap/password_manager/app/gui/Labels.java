@@ -2,14 +2,14 @@ package com.valentino.tap.password_manager.app.gui;
 
 public class Labels {
 	
-	Labels() {}
+	private Labels() {}
 	
 	// Titles & Headers
 	public static final String FRAME_TITLE = "Password Manager";
 	public static final String ERROR_TITLE = "Error Occurred";
 	public static final String ADD_TITLE = "Add a new password";
 	public static final String EDIT_TITLE = "Edit an existing password";
-	public static final String COLUMN_HEADERS[] = {"Website", "Username", "Password"};
+	public static final String[] COLUMN_HEADERS = {"Website", "Username", "Password"};
 	
 	// Labels
 	public static final String DELETE_LABEL = "Delete Password";

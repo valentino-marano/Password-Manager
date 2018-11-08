@@ -29,7 +29,7 @@ public class Application {
 		List<Password> passwords = passwordManager.getAllPasswords();
 		passwords.stream().forEach(password -> 
 			LOGGER.info("Password: " + password.getWebsite() + " - " + 
-				password.getUsername() + " - " + password.getPassword()));
+				password.getUsername() + " - " + password.getPassw()));
 		LOGGER.info("Terminates.");
 		
 		PasswordManagerGUI app = new PasswordManagerGUI(passwordManager);

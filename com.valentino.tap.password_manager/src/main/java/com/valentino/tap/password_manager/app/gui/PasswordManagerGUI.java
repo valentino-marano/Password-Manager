@@ -46,7 +46,7 @@ public class PasswordManagerGUI {
 			item.setData(password);
 			item.setText(0, password.getWebsite());
 			item.setText(1, password.getUsername());
-			item.setText(2, password.getPassword());
+			item.setText(2, password.getPassw());
 		}
 		for (int i = 0; i < Labels.COLUMN_HEADERS.length; i++) {
 			table.getColumn(i).pack();
@@ -67,7 +67,6 @@ public class PasswordManagerGUI {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				EditDialog edit = new EditDialog(passwordManager, null, shell);
-				edit.open();
 				edit.eventLoop(Display.getDefault());
 				refresh();
 			}
@@ -81,7 +80,6 @@ public class PasswordManagerGUI {
 			public void widgetSelected(SelectionEvent e) {
 				if (selected != null) {
 					EditDialog edit = new EditDialog(passwordManager, selected, shell);
-					edit.open();
 					edit.eventLoop(Display.getDefault());
 					refresh();
 				}
