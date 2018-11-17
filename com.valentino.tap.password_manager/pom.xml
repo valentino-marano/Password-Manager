@@ -131,6 +131,10 @@
 								<configuration>
 									<dataFile>${jacoco.data.file}</dataFile>
 									<outputDirectory>${jacoco.report.path}</outputDirectory>
+									<excludes>
+										<exclude>**/com/valentino/tap/password_manager/app/gui/Labels.class</exclude>
+										<exclude>**/com/valentino/tap/password_manager/app/Application.class</exclude>
+									</excludes>	
 								</configuration>
 							</execution><!-- For Integration tests -->
 							<execution>

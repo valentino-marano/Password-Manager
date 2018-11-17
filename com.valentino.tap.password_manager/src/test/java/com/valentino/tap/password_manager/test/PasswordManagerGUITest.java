@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -102,17 +103,18 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testTableRefresh() {		
-		assertEquals(0, bot.table().rowCount());
 		passwordManager.addPassword(new Password("sito1", "user1", "password1"));
 		passwordManager.addPassword(new Password("sito2", "user2", "password2"));
+		SWTBotTable table = bot.table();
+		assertEquals(0, table.rowCount());
 		bot.button(Labels.REFRESH_LABEL).click();
-		assertEquals(2, bot.table().rowCount());
-		assertEquals("sito1", bot.table().cell(0, 0));
-		assertEquals("user1", bot.table().cell(0, 1));
-		assertEquals("password1", bot.table().cell(0, 2));
-		assertEquals("sito2", bot.table().cell(1, 0));
-		assertEquals("user2", bot.table().cell(1, 1));
-		assertEquals("password2", bot.table().cell(1, 2));
+		assertEquals(2, table.rowCount());
+		assertEquals("sito1", table.cell(0, 0));
+		assertEquals("user1", table.cell(0, 1));
+		assertEquals("password1", table.cell(0, 2));
+		assertEquals("sito2", table.cell(1, 0));
+		assertEquals("user2", table.cell(1, 1));
+		assertEquals("password2", table.cell(1, 2));
 	}
 	
 	@Test
@@ -205,24 +207,26 @@ public class PasswordManagerGUITest {
 	public void testEditPasswordCancel() {
 		passwordManager.addPassword(new Password("sito1", "user1", "password1"));
 		bot.button(Labels.REFRESH_LABEL).click();
-		bot.table().getTableItem(0).click();
+		SWTBotTable table = bot.table();
+		table.getTableItem(0).click();
 		bot.button(Labels.EDIT_LABEL).click();
 		SWTBotShell editShell = bot.activeShell();
 		SWTBot editBot = new SWTBot(editShell.widget);
 		editBot.button(Labels.CANCEL_LABEL).click();
 		editBot.waitUntil(Conditions.shellCloses(editShell));
 		assertEquals(Labels.FRAME_TITLE, bot.activeShell().getText());
-		assertEquals(1, bot.table().rowCount());
-		assertEquals("sito1", bot.table().cell(0, 0));
-		assertEquals("user1", bot.table().cell(0, 1));
-		assertEquals("password1", bot.table().cell(0, 2));
+		assertEquals(1, table.rowCount());
+		assertEquals("sito1", table.cell(0, 0));
+		assertEquals("user1", table.cell(0, 1));
+		assertEquals("password1", table.cell(0, 2));
 	}
 	
 	@Test
 	public void testEditPasswordNotExists() {
 		passwordManager.addPassword(new Password("sito1", "user1", "password1"));
 		bot.button(Labels.REFRESH_LABEL).click();
-		bot.table().getTableItem(0).click();
+		SWTBotTable table = bot.table();
+		table.getTableItem(0).click();
 		bot.button(Labels.EDIT_LABEL).click();
 		SWTBotShell editShell = bot.activeShell();
 		SWTBot editBot = new SWTBot(editShell.widget);
@@ -232,10 +236,10 @@ public class PasswordManagerGUITest {
 		editBot.button(Labels.OK_LABEL).click();
 		editBot.waitUntil(Conditions.shellCloses(editShell));
 		assertEquals(Labels.FRAME_TITLE, bot.activeShell().getText());
-		assertEquals(1, bot.table().rowCount());
-		assertEquals("sito2", bot.table().cell(0, 0));
-		assertEquals("user2", bot.table().cell(0, 1));
-		assertEquals("password2", bot.table().cell(0, 2));
+		assertEquals(1, table.rowCount());
+		assertEquals("sito2", table.cell(0, 0));
+		assertEquals("user2", table.cell(0, 1));
+		assertEquals("password2", table.cell(0, 2));
 	}
 	
 	@Test
@@ -274,11 +278,12 @@ public class PasswordManagerGUITest {
 		passwordManager.addPassword(new Password("sito2", "user2", "password2"));
 		passwordManager.addPassword(new Password("sito3", "user3", "password3"));
 		bot.button(Labels.REFRESH_LABEL).click();
-		bot.table().getTableItem(1).click();
+		SWTBotTable table = bot.table();
+		table.getTableItem(1).click();
 		bot.button(Labels.DELETE_LABEL).click();
-		assertEquals(2, bot.table().rowCount());
-		assertEquals("sito1", bot.table().cell(0, 0));
-		assertEquals("sito3", bot.table().cell(1, 0));
+		assertEquals(2, table.rowCount());
+		assertEquals("sito1", table.cell(0, 0));
+		assertEquals("sito3", table.cell(1, 0));
 	}
 	
 	@Test
@@ -294,9 +299,10 @@ public class PasswordManagerGUITest {
 		passwordManager.addPassword(new Password("site2", "user2", "password2"));
 		passwordManager.addPassword(new Password("sito3", "utente3", "password3"));
 		bot.textWithTooltip(Labels.SEARCH_HINT).setText("ite");
-		assertEquals(2, bot.table().rowCount());
-		assertEquals("site1", bot.table().cell(0, 0));
-		assertEquals("site2", bot.table().cell(1, 0));
+		SWTBotTable table = bot.table();
+		assertEquals(2, table.rowCount());
+		assertEquals("site1", table.cell(0, 0));
+		assertEquals("site2", table.cell(1, 0));
 	}
 	
 	@Test
@@ -305,9 +311,10 @@ public class PasswordManagerGUITest {
 		passwordManager.addPassword(new Password("site2", "user2", "password2"));
 		passwordManager.addPassword(new Password("site3", "utente3", "password3"));
 		bot.textWithTooltip(Labels.SEARCH_HINT).setText("ser");
-		assertEquals(2, bot.table().rowCount());
-		assertEquals("site1", bot.table().cell(0, 0));
-		assertEquals("site2", bot.table().cell(1, 0));
+		SWTBotTable table = bot.table();
+		assertEquals(2, table.rowCount());
+		assertEquals("site1", table.cell(0, 0));
+		assertEquals("site2", table.cell(1, 0));
 	}
 	
 	@Test
@@ -316,8 +323,45 @@ public class PasswordManagerGUITest {
 		passwordManager.addPassword(new Password("sito2", "site1", "password2"));
 		passwordManager.addPassword(new Password("sito3", "utente3", "password3"));
 		bot.textWithTooltip(Labels.SEARCH_HINT).setText("ite");
-		assertEquals(2, bot.table().rowCount());
-		assertEquals("site1", bot.table().cell(0, 0));
-		assertEquals("sito2", bot.table().cell(1, 0));
+		SWTBotTable table = bot.table();
+		assertEquals(2, table.rowCount());
+		assertEquals("site1", table.cell(0, 0));
+		assertEquals("sito2", table.cell(1, 0));
+	}
+	
+	@Test
+	public void testTableOrder() {
+		passwordManager.addPassword(new Password("site2", "user1", "password1"));
+		passwordManager.addPassword(new Password("site1", "user2", "password3"));
+		passwordManager.addPassword(new Password("site3", "user3", "password2"));
+		bot.button(Labels.REFRESH_LABEL).click();
+		SWTBotTable table = bot.table();
+		assertEquals("site2", table.cell(0, 0));
+		assertEquals("site1", table.cell(1, 0));
+		assertEquals("site3", table.cell(2, 0));
+		table.header(Labels.COLUMN_HEADERS[0]).click();
+		assertEquals("site1", table.cell(0, 0));
+		assertEquals("site2", table.cell(1, 0));
+		assertEquals("site3", table.cell(2, 0));
+		table.header(Labels.COLUMN_HEADERS[0]).click();
+		assertEquals("site3", table.cell(0, 0));
+		assertEquals("site2", table.cell(1, 0));
+		assertEquals("site1", table.cell(2, 0));
+		table.header(Labels.COLUMN_HEADERS[1]).click();
+		assertEquals("user1", table.cell(0, 1));
+		assertEquals("user2", table.cell(1, 1));
+		assertEquals("user3", table.cell(2, 1));
+		table.header(Labels.COLUMN_HEADERS[1]).click();
+		assertEquals("user3", table.cell(0, 1));
+		assertEquals("user2", table.cell(1, 1));
+		assertEquals("user1", table.cell(2, 1));
+		table.header(Labels.COLUMN_HEADERS[2]).click();
+		assertEquals("password1", table.cell(0, 2));
+		assertEquals("password2", table.cell(1, 2));
+		assertEquals("password3", table.cell(2, 2));
+		table.header(Labels.COLUMN_HEADERS[2]).click();
+		assertEquals("password3", table.cell(0, 2));
+		assertEquals("password2", table.cell(1, 2));
+		assertEquals("password1", table.cell(2, 2));
 	}
 }

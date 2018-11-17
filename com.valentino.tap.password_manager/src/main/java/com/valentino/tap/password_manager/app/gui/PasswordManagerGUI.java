@@ -1,5 +1,6 @@
 package com.valentino.tap.password_manager.app.gui;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -11,6 +12,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -27,8 +30,10 @@ public class PasswordManagerGUI {
 	private Shell shell;
 	private Text searchField;
 	private Password selected;
+	private TableColumn selectedColumn;
+	private boolean reversedOrder = false;
+	private List<Password> passwords;
 	static final Logger LOGGER = Logger.getLogger(PasswordManagerGUI.class);
-
 
 	public PasswordManagerGUI(PasswordManager passwordManager) {
 		this.passwordManager = passwordManager;
@@ -41,13 +46,15 @@ public class PasswordManagerGUI {
 		shell.layout();
 		shell.forceActive();
 	}
-
-	private void refresh () {
-		List<Password> passwords;
+	
+	private void getPasswordsFromDB() {
 		if (searchField.getText().isEmpty())
 			passwords = passwordManager.getAllPasswords();
 		else
 			passwords = passwordManager.getSearchedPasswords(searchField.getText());			
+	}
+
+	private void refresh () {
 		table.removeAll();
 		for (Password password : passwords) {
 			TableItem item = new TableItem(table, SWT.NULL);
@@ -56,9 +63,8 @@ public class PasswordManagerGUI {
 			item.setText(1, password.getUsername());
 			item.setText(2, password.getPassw());
 		}
-		for (int i = 0; i < Labels.COLUMN_HEADERS.length; i++) {
+		for (int i = 0; i < Labels.COLUMN_HEADERS.length; i++)
 			table.getColumn(i).pack();
-		}
 	}
 
 	private void createGUI() {
@@ -76,6 +82,7 @@ public class PasswordManagerGUI {
 			public void widgetSelected(SelectionEvent e) {
 				EditDialog edit = new EditDialog(passwordManager, null, shell);
 				edit.eventLoop(Display.getDefault());
+				getPasswordsFromDB();
 				refresh();
 			}
 		});
@@ -89,6 +96,7 @@ public class PasswordManagerGUI {
 				if (selected != null) {
 					EditDialog edit = new EditDialog(passwordManager, selected, shell);
 					edit.eventLoop(Display.getDefault());
+					getPasswordsFromDB();
 					refresh();
 				}
 			}
@@ -102,6 +110,7 @@ public class PasswordManagerGUI {
 			public void widgetSelected(SelectionEvent e) {
 				if (selected != null) {
 					passwordManager.deletePassword(selected);
+					getPasswordsFromDB();
 					refresh();
 				}
 			}
@@ -112,7 +121,8 @@ public class PasswordManagerGUI {
 		refreshButton.setToolTipText(Labels.REFRESH_HINT);
 		refreshButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {			
+			public void widgetSelected(SelectionEvent e) {
+				getPasswordsFromDB();
 				refresh();
 				selected = null;
 			}
@@ -124,7 +134,10 @@ public class PasswordManagerGUI {
 		searchField = new Text(shell, SWT.SEARCH | SWT.BORDER);
 		searchField.setLayoutData(gridDataSearch);
 		searchField.setToolTipText(Labels.SEARCH_HINT);
-		searchField.addModifyListener((ModifyEvent arg0) -> refresh());
+		searchField.addModifyListener((ModifyEvent arg0) -> {
+			getPasswordsFromDB();
+			refresh();			
+		});
 
 		GridData gridDataTable = new GridData();
 		gridDataTable.horizontalAlignment = GridData.FILL;
@@ -140,7 +153,10 @@ public class PasswordManagerGUI {
 			TableColumn column = new TableColumn(table, SWT.NULL);
 			column.setText(Labels.COLUMN_HEADERS[i]);
 		}
+		
+		getPasswordsFromDB();
 		refresh();
+		
 		table.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
@@ -148,6 +164,33 @@ public class PasswordManagerGUI {
 				LOGGER.info("Selected Password " +  selected.getWebsite() + " " + selected.getUsername());
 			}
 		});
+		for (TableColumn column : table.getColumns()) {
+			column.addListener(SWT.Selection, new Listener() {
+				@Override
+				public void handleEvent(Event e) {
+					TableColumn clickedColumn = (TableColumn) e.widget;
+					
+					if (clickedColumn == selectedColumn)
+						reversedOrder = !reversedOrder;
+					else {
+						selectedColumn = clickedColumn;
+						reversedOrder = false;
+					}
+
+					if (selectedColumn == table.getColumn(0)) 
+						if (reversedOrder) passwords.sort(Comparator.comparing(Password::getWebsite).reversed());
+						else passwords.sort(Comparator.comparing(Password::getWebsite));
+					else if (selectedColumn == table.getColumn(1)) 
+						if (reversedOrder) passwords.sort(Comparator.comparing(Password::getUsername).reversed());
+						else passwords.sort(Comparator.comparing(Password::getUsername));
+					else if (selectedColumn == table.getColumn(2)) 
+						if (reversedOrder) passwords.sort(Comparator.comparing(Password::getPassw).reversed());
+						else passwords.sort(Comparator.comparing(Password::getPassw));
+					table.setSortColumn(selectedColumn);
+	                refresh();
+				}
+			});
+		}
 		table.setLayoutData(gridDataTable);
 	}
 
