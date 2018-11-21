@@ -13,7 +13,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -46,7 +45,7 @@ public class PasswordManagerGUI {
 		shell.layout();
 		shell.forceActive();
 	}
-	
+
 	private void getPasswordsFromDB() {
 		if (searchField.getText().isEmpty())
 			passwords = passwordManager.getAllPasswords();
@@ -62,6 +61,7 @@ public class PasswordManagerGUI {
 			item.setText(0, password.getWebsite());
 			item.setText(1, password.getUsername());
 			item.setText(2, password.getPassw());
+			item.setText(3, password.getExpiration());
 		}
 		for (int i = 0; i < Labels.COLUMN_HEADERS.length; i++)
 			table.getColumn(i).pack();
@@ -127,7 +127,7 @@ public class PasswordManagerGUI {
 				selected = null;
 			}
 		});
-		
+
 		GridData gridDataSearch = new GridData();
 		gridDataSearch.horizontalAlignment = GridData.FILL;
 		gridDataSearch.grabExcessHorizontalSpace = true;
@@ -153,10 +153,10 @@ public class PasswordManagerGUI {
 			TableColumn column = new TableColumn(table, SWT.NULL);
 			column.setText(Labels.COLUMN_HEADERS[i]);
 		}
-		
+
 		getPasswordsFromDB();
 		refresh();
-		
+
 		table.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
@@ -165,30 +165,33 @@ public class PasswordManagerGUI {
 			}
 		});
 		for (TableColumn column : table.getColumns()) {
-			column.addListener(SWT.Selection, new Listener() {
-				@Override
-				public void handleEvent(Event e) {
-					TableColumn clickedColumn = (TableColumn) e.widget;
-					
-					if (clickedColumn == selectedColumn)
-						reversedOrder = !reversedOrder;
-					else {
-						selectedColumn = clickedColumn;
-						reversedOrder = false;
-					}
+			column.addListener(SWT.Selection, (Event e) -> {
+				TableColumn clickedColumn = (TableColumn) e.widget;
 
-					if (selectedColumn == table.getColumn(0)) 
-						if (reversedOrder) passwords.sort(Comparator.comparing(Password::getWebsite).reversed());
-						else passwords.sort(Comparator.comparing(Password::getWebsite));
-					else if (selectedColumn == table.getColumn(1)) 
-						if (reversedOrder) passwords.sort(Comparator.comparing(Password::getUsername).reversed());
-						else passwords.sort(Comparator.comparing(Password::getUsername));
-					else if (selectedColumn == table.getColumn(2)) 
-						if (reversedOrder) passwords.sort(Comparator.comparing(Password::getPassw).reversed());
-						else passwords.sort(Comparator.comparing(Password::getPassw));
-					table.setSortColumn(selectedColumn);
-	                refresh();
+				if (clickedColumn == selectedColumn)
+					reversedOrder = !reversedOrder;
+				else {
+					selectedColumn = clickedColumn;
+					reversedOrder = false;
 				}
+
+				Comparator<Password> comparator = null;
+
+				if (selectedColumn == table.getColumn(0))
+					comparator = Comparator.comparing(Password::getWebsite);
+				else if (selectedColumn == table.getColumn(1)) 
+					comparator = Comparator.comparing(Password::getUsername);
+				else if (selectedColumn == table.getColumn(2)) 
+					comparator = Comparator.comparing(Password::getPassw);
+				else if (selectedColumn == table.getColumn(3)) 
+					comparator = Comparator.comparing(Password::getExpiration);
+
+				if (reversedOrder)
+					comparator = comparator.reversed();
+
+				passwords.sort(comparator);
+				table.setSortColumn(selectedColumn);
+				refresh();
 			});
 		}
 		table.setLayoutData(gridDataTable);

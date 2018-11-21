@@ -2,6 +2,7 @@ package com.valentino.tap.password_manager.test.db;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,27 +29,27 @@ public class PasswordManagerIT extends AbstractTest {
 	
 	@Test
 	public void testSavePasswordWhenDoesNotExist() {
-		Password password = new Password("sito1", "user1", "password1");
+		Password password = new Password("sito1", "user1", "password1", Password.createDate(1999, 9, 9));
 		assertTrue(((PasswordManagerTester) sut).addPassword(password));
 	}
 	
 	@Test
 	public void testSavePasswordWhenExists() {
-		mongoTestHelper.addPassword(new Password("site1", "user1", "password1"));
-		Password password = new Password("site1", "user1", "password1");
+		mongoTestHelper.addPassword(new Password("site1", "user1", "password1", Password.createDate(1999, 9, 9)));
+		Password password = new Password("site1", "user1", "password2", Password.createDate(2019, 9, 9));
 		assertFalse(((PasswordManagerTester) sut).addPassword(password));
 	}
 	
 	@Test
 	public void testDeletePasswordWhenExists() {
-		Password password = new Password("site1", "user1", "password1");
+		Password password = new Password("site1", "user1", "password1", Password.createDate(1999, 9, 9));
 		mongoTestHelper.addPassword(password);
 		assertTrue(((PasswordManagerTester) sut).deletePassword(password));
 	}
 	
 	@Test
 	public void testDeletePasswordWhenNotExists() {
-		Password password = new Password("site1", "user1", "password1");
+		Password password = new Password("site1", "user1", "password1", Password.createDate(1999, 9, 9));
 		assertFalse(((PasswordManagerTester) sut).deletePassword(password));
 	}
 }

@@ -15,10 +15,7 @@ public class MongoDatabaseWrapperWithTestContainersIT extends AbstractMongoDatab
 
 	@Override
 	public MongoClient createMongoClient() throws UnknownHostException {
-		MongoClient mongoClient =
-				new MongoClient(
-						mongo.getContainerIpAddress(),
-						mongo.getMappedPort(27017));
+		MongoClient mongoClient = new MongoClient(mongo.getContainerIpAddress(), mongo.getMappedPort(27017));
 		return mongoClient;
 	}
 }

@@ -1,5 +1,9 @@
 package com.valentino.tap.password_manager.app.gui;
 
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -8,6 +12,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -25,6 +30,7 @@ public class EditDialog extends Dialog {
 	private Text websiteField;
 	private Text userField;
 	private Text passwordField;
+	private DateTime expirationField;
 	private Button okButton;
 
 
@@ -48,7 +54,8 @@ public class EditDialog extends Dialog {
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Password newPassword = new Password(websiteField.getText(), userField.getText(), passwordField.getText());
+				Password newPassword = new Password(websiteField.getText(), userField.getText(), passwordField.getText(), 
+						Password.createDate(expirationField.getYear(), expirationField.getMonth(), expirationField.getDay()));
 				if(passwordManager.addPassword(newPassword))
 					shell.dispose();
 				else {
@@ -72,13 +79,19 @@ public class EditDialog extends Dialog {
 		String oldUser = password.getUsername();
 		userField.setText(oldUser);
 		passwordField.setText(password.getPassw());
-
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+		calendar.setTime(password.getDateExpiration());
+		expirationField.setDay(calendar.get(Calendar.DAY_OF_MONTH));
+		expirationField.setMonth(calendar.get(Calendar.MONTH));
+		expirationField.setYear(calendar.get(Calendar.YEAR));
+		
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				password.setWebsite(websiteField.getText());
 				password.setUsername(userField.getText());
 				password.setPassw(passwordField.getText());
+				password.setExpiration(Password.createDate(expirationField.getYear(), expirationField.getMonth(), expirationField.getDay()));
 
 				if(passwordManager.existsPassword(password) && !(password.getWebsite().equals(oldWebsite) && password.getUsername().equals(oldUser))) {
 					/* MessageBox attualmente non testabile con SWTBot
@@ -100,8 +113,8 @@ public class EditDialog extends Dialog {
 
 	private void createGUI() {
 		shell = new Shell(getParent(), SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL);
-		shell.setBounds(300, 300, 400, 200);
-		shell.setMinimumSize(400, 200);
+		shell.setBounds(300, 300, 600, 400);
+		shell.setMinimumSize(600, 400);
 		shell.setLayout(new GridLayout(2, true));
 
 		// Labels & Input Fields
@@ -120,6 +133,11 @@ public class EditDialog extends Dialog {
 		passwordLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 		passwordField = new Text(shell, SWT.SINGLE | SWT.BORDER);
 		passwordField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
+		Label expirationLabel = new Label(shell, SWT.NONE);
+		expirationLabel.setText(Labels.COLUMN_HEADERS[3]);
+		expirationLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+		expirationField = new DateTime(shell, SWT.CALENDAR);
+		expirationField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));		
 
 		// Cancel & Ok Buttons
 		Button cancelButton = new Button(shell, SWT.PUSH);

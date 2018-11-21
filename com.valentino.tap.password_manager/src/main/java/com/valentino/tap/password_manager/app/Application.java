@@ -1,7 +1,10 @@
 package com.valentino.tap.password_manager.app;
 
 import java.net.UnknownHostException;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Display;
@@ -21,15 +24,18 @@ public class Application {
 		Database database = new MongoDatabaseWrapper(new MongoClient(mongoHost));
 		PasswordManager passwordManager = new PasswordManager(database);
 		LOGGER.info("Adding password...");
-		passwordManager.addPassword(new Password("sito1", "user1", "password1"));
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+		calendar.set(2012, Calendar.DECEMBER, 12);
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
 		LOGGER.info("Adding password...");
-		passwordManager.addPassword(new Password("sito2", "user2", "password2"));
+		calendar.set(1999, Calendar.DECEMBER, 12);
+		passwordManager.addPassword(new Password("sito2", "user2", "password2", calendar.getTime()));
 		
 		LOGGER.info("List of all passwords:");
 		List<Password> passwords = passwordManager.getAllPasswords();
 		passwords.stream().forEach(password -> 
 			LOGGER.info("Password: " + password.getWebsite() + " - " + 
-				password.getUsername() + " - " + password.getPassw()));
+				password.getUsername() + " - " + password.getPassw() + " - " + password.getExpiration()));
 		LOGGER.info("Terminates.");
 		
 		PasswordManagerGUI app = new PasswordManagerGUI(passwordManager);
