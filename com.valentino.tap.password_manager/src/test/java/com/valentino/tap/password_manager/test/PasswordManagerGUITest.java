@@ -1,9 +1,11 @@
 package com.valentino.tap.password_manager.test;
 
 import static org.junit.Assert.assertEquals;
-
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -35,6 +37,8 @@ public class PasswordManagerGUITest {
 	private static PasswordManager passwordManager;
 
 	private final static CyclicBarrier swtBarrier = new CyclicBarrier(2);
+	
+	private static Calendar calendar;
 
 	@BeforeClass
 	public static synchronized void setupApp() {
@@ -75,6 +79,11 @@ public class PasswordManagerGUITest {
 		// synchronize with the thread opening the shell
 		swtBarrier.await();
 		bot = new SWTBot(shell);
+		calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
 	}
 
 	@After
@@ -105,9 +114,12 @@ public class PasswordManagerGUITest {
 	}
 	
 	@Test
-	public void testTableRefresh() {		
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("sito2", "user2", "password2", Password.createDate(2012, 12, 12)));
+	public void testTableRefresh() {
+		Date date1 = calendar.getTime();
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", date1));
+		calendar.add(Calendar.MONTH, 1);
+		Date nextMonth = calendar.getTime();
+		passwordManager.addPassword(new Password("sito2", "user2", "password2", nextMonth));
 		SWTBotTable table = bot.table();
 		assertEquals(0, table.rowCount());
 		bot.button(Labels.REFRESH_LABEL).click();
@@ -115,11 +127,11 @@ public class PasswordManagerGUITest {
 		assertEquals("sito1", table.cell(0, 0));
 		assertEquals("user1", table.cell(0, 1));
 		assertEquals("password1", table.cell(0, 2));
-		assertEquals("1999/09/09", table.cell(0, 3));
+		assertEquals(Password.simpleDateFormat.format(date1), table.cell(0, 3));
 		assertEquals("sito2", table.cell(1, 0));
 		assertEquals("user2", table.cell(1, 1));
 		assertEquals("password2", table.cell(1, 2));
-		assertEquals("2012/12/12", table.cell(1, 3));
+		assertEquals(Password.simpleDateFormat.format(nextMonth), table.cell(1, 3));
 	}
 	
 	@Test
@@ -168,7 +180,7 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testAddPasswordAlreadyExists() {
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
 		bot.button(Labels.ADD_LABEL).click();
 		SWTBot addBot = new SWTBot(bot.activeShell().widget);
 		addBot.text("", 0).setText("sito1");
@@ -186,7 +198,7 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testEditPasswordNotSelected() {
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
 		bot.button(Labels.REFRESH_LABEL).click();
 		bot.button(Labels.EDIT_LABEL);
 		assertEquals(Labels.FRAME_TITLE, bot.activeShell().getText());
@@ -194,7 +206,7 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testEditPasswordStructure() {		
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
 		bot.button(Labels.REFRESH_LABEL).click();
 		bot.table().getTableItem(0).click();
 		bot.button(Labels.EDIT_LABEL).click();
@@ -215,7 +227,8 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testEditPasswordCancel() throws ParseException {
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", Password.createDate(1999, 9, 9)));
+		Date date1 = calendar.getTime();
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", date1));
 		bot.button(Labels.REFRESH_LABEL).click();
 		SWTBotTable table = bot.table();
 		table.getTableItem(0).click();
@@ -232,12 +245,12 @@ public class PasswordManagerGUITest {
 		assertEquals("sito1", table.cell(0, 0));
 		assertEquals("user1", table.cell(0, 1));
 		assertEquals("password1", table.cell(0, 2));
-		assertEquals("1999/09/09", table.cell(0, 3));
+		assertEquals(Password.simpleDateFormat.format(date1), table.cell(0, 3));
 	}
 	
 	@Test
 	public void testEditPasswordNotExists() throws ParseException {
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
 		bot.button(Labels.REFRESH_LABEL).click();
 		SWTBotTable table = bot.table();
 		table.getTableItem(0).click();
@@ -258,8 +271,8 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testEditPasswordAlreadyExists() {
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("sito2", "user2", "password2", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
+		passwordManager.addPassword(new Password("sito2", "user2", "password2", calendar.getTime()));
 		bot.button(Labels.REFRESH_LABEL).click();
 		bot.table().getTableItem(0).click();
 		bot.button(Labels.EDIT_LABEL).click();
@@ -278,8 +291,8 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testDeletePasswordNotSelected() {
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("sito2", "user2", "password2", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
+		passwordManager.addPassword(new Password("sito2", "user2", "password2", calendar.getTime()));
 		bot.button(Labels.REFRESH_LABEL).click();
 		bot.button(Labels.DELETE_LABEL).click();
 		assertEquals(2, bot.table().rowCount());		
@@ -287,9 +300,9 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testDeletePasswordSelected() {
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("sito2", "user2", "password2", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("sito3", "user3", "password3", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
+		passwordManager.addPassword(new Password("sito2", "user2", "password2", calendar.getTime()));
+		passwordManager.addPassword(new Password("sito3", "user3", "password3", calendar.getTime()));
 		bot.button(Labels.REFRESH_LABEL).click();
 		SWTBotTable table = bot.table();
 		table.getTableItem(1).click();
@@ -301,16 +314,16 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testSearchNotFound() {
-		passwordManager.addPassword(new Password("site1", "user1", "password1", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("site1", "user1", "password1", calendar.getTime()));
 		bot.textWithTooltip(Labels.SEARCH_HINT).setText("we");
 		assertEquals(0, bot.table().rowCount());
 	}
 	
 	@Test
 	public void testSearchByWebsite() {
-		passwordManager.addPassword(new Password("site1", "user1", "password1", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("site2", "user2", "password2", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("sito3", "utente3", "password3", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("site1", "user1", "password1", calendar.getTime()));
+		passwordManager.addPassword(new Password("site2", "user2", "password2", calendar.getTime()));
+		passwordManager.addPassword(new Password("sito3", "utente3", "password3", calendar.getTime()));
 		bot.textWithTooltip(Labels.SEARCH_HINT).setText("ite");
 		SWTBotTable table = bot.table();
 		assertEquals(2, table.rowCount());
@@ -320,9 +333,9 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testSearchByUser() {
-		passwordManager.addPassword(new Password("site1", "user1", "password1", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("site2", "user2", "password2", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("site3", "utente3", "password3", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("site1", "user1", "password1", calendar.getTime()));
+		passwordManager.addPassword(new Password("site2", "user2", "password2", calendar.getTime()));
+		passwordManager.addPassword(new Password("site3", "utente3", "password3", calendar.getTime()));
 		bot.textWithTooltip(Labels.SEARCH_HINT).setText("ser");
 		SWTBotTable table = bot.table();
 		assertEquals(2, table.rowCount());
@@ -332,9 +345,9 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testSearchByWebsiteAndUser() {
-		passwordManager.addPassword(new Password("site1", "user1", "password1", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("sito2", "site1", "password2", Password.createDate(1999, 9, 9)));
-		passwordManager.addPassword(new Password("sito3", "utente3", "password3", Password.createDate(1999, 9, 9)));
+		passwordManager.addPassword(new Password("site1", "user1", "password1", calendar.getTime()));
+		passwordManager.addPassword(new Password("sito2", "site1", "password2", calendar.getTime()));
+		passwordManager.addPassword(new Password("sito3", "utente3", "password3", calendar.getTime()));
 		bot.textWithTooltip(Labels.SEARCH_HINT).setText("ite");
 		SWTBotTable table = bot.table();
 		assertEquals(2, table.rowCount());
@@ -344,9 +357,16 @@ public class PasswordManagerGUITest {
 	
 	@Test
 	public void testTableOrder() {
-		passwordManager.addPassword(new Password("site2", "user1", "password1", Password.createDate(2019, 9, 9)));
-		passwordManager.addPassword(new Password("site1", "user2", "password3", Password.createDate(2019, 11, 9)));
-		passwordManager.addPassword(new Password("site3", "user3", "password2", Password.createDate(2019, 12, 9)));
+		Date date1 = calendar.getTime();
+		calendar.add(Calendar.MONTH, 1);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		Date date2 = calendar.getTime();
+		calendar.add(Calendar.MONTH, 1);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		Date date3 = calendar.getTime();
+		passwordManager.addPassword(new Password("site2", "user1", "password1", date1));
+		passwordManager.addPassword(new Password("site1", "user2", "password3", date2));
+		passwordManager.addPassword(new Password("site3", "user3", "password2", date3));
 		bot.button(Labels.REFRESH_LABEL).click();
 		SWTBotTable table = bot.table();
 		assertEquals("site2", table.cell(0, 0));
@@ -377,12 +397,42 @@ public class PasswordManagerGUITest {
 		assertEquals("password2", table.cell(1, 2));
 		assertEquals("password1", table.cell(2, 2));
 		table.header(Labels.COLUMN_HEADERS[3]).click();
-		assertEquals("2019/09/09", table.cell(0, 3));
-		assertEquals("2019/11/09", table.cell(1, 3));
-		assertEquals("2019/12/09", table.cell(2, 3));
+		assertEquals(Password.simpleDateFormat.format(date1), table.cell(0, 3));
+		assertEquals(Password.simpleDateFormat.format(date2), table.cell(1, 3));
+		assertEquals(Password.simpleDateFormat.format(date3), table.cell(2, 3));
 		table.header(Labels.COLUMN_HEADERS[3]).click();
-		assertEquals("2019/12/09", table.cell(0, 3));
-		assertEquals("2019/11/09", table.cell(1, 3));
-		assertEquals("2019/09/09", table.cell(2, 3));
+		assertEquals(Password.simpleDateFormat.format(date3), table.cell(0, 3));
+		assertEquals(Password.simpleDateFormat.format(date2), table.cell(1, 3));
+		assertEquals(Password.simpleDateFormat.format(date1), table.cell(2, 3));
+	}
+	
+	@Test
+	public void testNotExpiredPasswords() {
+		passwordManager.addPassword(new Password("site2", "user1", "password1", calendar.getTime()));
+		passwordManager.addPassword(new Password("site1", "user2", "password3", calendar.getTime()));
+		passwordManager.addPassword(new Password("site3", "user3", "password2", calendar.getTime()));
+		bot.button(Labels.REFRESH_LABEL).click();
+		assertEquals(Labels.FRAME_TITLE, bot.activeShell().getText());
+	}
+
+	@Test
+	public void testExpiredPasswords() {
+		passwordManager.addPassword(new Password("site1", "user1", "password1", calendar.getTime()));
+		calendar.add(Calendar.MONTH, -1);
+		passwordManager.addPassword(new Password("site2", "user2", "password2", calendar.getTime()));
+		bot.button(Labels.REFRESH_LABEL).click();
+		SWTBotShell expiredShell = bot.activeShell();
+		SWTBot expiredBot = new SWTBot(expiredShell.widget);
+		assertEquals(Labels.EXPIRED_TITLE, expiredShell.getText());
+		expiredBot.label(Labels.EXPIRED_MSG);
+		expiredBot.button(Labels.OK_LABEL).click();
+		assertEquals(Labels.FRAME_TITLE, bot.activeShell().getText());
+		expiredBot.waitUntil(Conditions.shellCloses(expiredShell));
+		/* Colore di TableItem attualmente non testabile 
+		 * https://www.eclipse.org/forums/index.php/m/485822/#msg_485822 
+		SWTBotTable table = bot.table();
+		assertNotEquals(Labels.COLOR_RED, table.getTableItem(0).backgroundColor());
+		assertEquals(Labels.COLOR_RED, table.getTableItem(1).backgroundColor());
+		*/
 	}
 }

@@ -1,7 +1,6 @@
 package com.valentino.tap.password_manager.app;
 
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -17,7 +16,7 @@ public class Password {
 	private String username;
 	private String passw;
 	private Date expiration;
-	public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+	public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	
 	@MongoId
 	@MongoObjectId
@@ -57,7 +56,7 @@ public class Password {
 	}
 	
 	public String getExpiration() {
-		return new SimpleDateFormat("yyyy/MM/dd").format(this.expiration);
+		return simpleDateFormat.format(this.expiration);
 	}
 	
 	public Date getDateExpiration() {
@@ -74,7 +73,11 @@ public class Password {
 	
 	public static Date createDate(int year, int month, int day) {
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
-		calendar.set(year, month-1, day);
+		calendar.set(year, month, day);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
 		return calendar.getTime();
 	}
 }

@@ -10,6 +10,7 @@ public class Labels {
 	public static final String ADD_TITLE = "Add a new password";
 	public static final String EDIT_TITLE = "Edit an existing password";
 	public static final String[] COLUMN_HEADERS = {"Website", "Username", "Password", "Expiration"};
+	public static final String EXPIRED_TITLE = "Expired Passwords";
 	
 	// Labels
 	public static final String DELETE_LABEL = "Delete Password";
@@ -28,4 +29,5 @@ public class Labels {
 	
 	// Messages
 	public static final String EXISTS_MSG = "Cannot save this password, it already exists in Database";
+	public static final String EXPIRED_MSG = "Some passwords have expired, check the highlighted ones.";
 }

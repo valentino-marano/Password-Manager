@@ -1,10 +1,16 @@
 package com.valentino.tap.password_manager.app.gui;
 
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -28,9 +34,11 @@ public class PasswordManagerGUI {
 	private PasswordManager passwordManager;
 	private Shell shell;
 	private Text searchField;
+	private String searchedString;
 	private Password selected;
 	private TableColumn selectedColumn;
 	private boolean reversedOrder = false;
+	private boolean expiredPasswords;
 	private List<Password> passwords;
 	static final Logger LOGGER = Logger.getLogger(PasswordManagerGUI.class);
 
@@ -44,6 +52,7 @@ public class PasswordManagerGUI {
 		shell.pack();
 		shell.layout();
 		shell.forceActive();
+		checkExpirations();
 	}
 
 	private void getPasswordsFromDB() {
@@ -55,6 +64,14 @@ public class PasswordManagerGUI {
 
 	private void refresh () {
 		table.removeAll();
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		Date today = calendar.getTime();
+		expiredPasswords = false;
+				
 		for (Password password : passwords) {
 			TableItem item = new TableItem(table, SWT.NULL);
 			item.setData(password);
@@ -62,9 +79,29 @@ public class PasswordManagerGUI {
 			item.setText(1, password.getUsername());
 			item.setText(2, password.getPassw());
 			item.setText(3, password.getExpiration());
+			if (password.getDateExpiration().before(today)) {
+				LOGGER.info(password.getDateExpiration().toString());
+				expiredPasswords = true;
+				item.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+			}
 		}
+		
 		for (int i = 0; i < Labels.COLUMN_HEADERS.length; i++)
 			table.getColumn(i).pack();
+	}
+	
+	private void checkExpirations() {
+		if (expiredPasswords) {
+			/* MessageBox attualmente non testabile con SWTBot
+			 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_WARNING | SWT.OK);
+			messageBox.setText(Labels.EXPIRED_TITLE);
+			messageBox.setMessage(Labels.EXPIRED_MSG);
+			messageBox.open();
+			*/
+			MessageDialog messageDialog = new MessageDialog(shell, Labels.EXPIRED_TITLE, Labels.EXPIRED_MSG);
+			messageDialog.eventLoop(Display.getDefault());
+		}
 	}
 
 	private void createGUI() {
@@ -84,6 +121,7 @@ public class PasswordManagerGUI {
 				edit.eventLoop(Display.getDefault());
 				getPasswordsFromDB();
 				refresh();
+				checkExpirations();
 			}
 		});
 
@@ -98,6 +136,7 @@ public class PasswordManagerGUI {
 					edit.eventLoop(Display.getDefault());
 					getPasswordsFromDB();
 					refresh();
+					checkExpirations();
 				}
 			}
 		});
@@ -124,6 +163,7 @@ public class PasswordManagerGUI {
 			public void widgetSelected(SelectionEvent e) {
 				getPasswordsFromDB();
 				refresh();
+				checkExpirations();
 				selected = null;
 			}
 		});
@@ -138,7 +178,20 @@ public class PasswordManagerGUI {
 			getPasswordsFromDB();
 			refresh();			
 		});
+		
+		searchField.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				if (!searchedString.equals(searchField.getText()))
+					checkExpirations();				
+			}
 
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				searchedString = searchField.getText();
+			}
+		});
+		
 		GridData gridDataTable = new GridData();
 		gridDataTable.horizontalAlignment = GridData.FILL;
 		gridDataTable.verticalAlignment = GridData.FILL;
@@ -194,7 +247,7 @@ public class PasswordManagerGUI {
 				refresh();
 			});
 		}
-		table.setLayoutData(gridDataTable);
+		table.setLayoutData(gridDataTable);			
 	}
 
 	public void eventLoop(Display display) {

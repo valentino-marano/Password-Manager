@@ -25,15 +25,15 @@ public abstract class AbstractMongoDatabaseWrapperTest extends AbstractTest {
 	
 	@Test
 	public void testPasswordIsSaved() {
-		Password password = new Password("site1", "user1", "password1", Password.createDate(1999, 9, 9));
+		Password password = new Password("site1", "user1", "password1", calendar.getTime());
 		((MongoTester) sut).save(password);
 		assertTrue(sut.existsPassword(password));
 	}
 	
 	@Test
 	public void testPasswordIsDeleted() {
-		Password password1 = new Password("site1", "user1", "password1", Password.createDate(1999, 9, 9));
-		Password password2 = new Password("site2", "user2", "password2", Password.createDate(1999, 9, 9));
+		Password password1 = new Password("site1", "user1", "password1", calendar.getTime());
+		Password password2 = new Password("site2", "user2", "password2", calendar.getTime());
 		mongoTestHelper.addPassword(password1);
 		mongoTestHelper.addPassword(password2);
 		((MongoTester) sut).delete(password1);

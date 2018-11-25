@@ -25,10 +25,9 @@ public class Application {
 		PasswordManager passwordManager = new PasswordManager(database);
 		LOGGER.info("Adding password...");
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
-		calendar.set(2012, Calendar.DECEMBER, 12);
 		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
 		LOGGER.info("Adding password...");
-		calendar.set(1999, Calendar.DECEMBER, 12);
+		calendar.add(Calendar.MONTH, 1);
 		passwordManager.addPassword(new Password("sito2", "user2", "password2", calendar.getTime()));
 		
 		LOGGER.info("List of all passwords:");
