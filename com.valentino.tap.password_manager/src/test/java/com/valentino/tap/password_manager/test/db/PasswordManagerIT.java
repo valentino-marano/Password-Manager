@@ -23,7 +23,7 @@ public class PasswordManagerIT extends AbstractTest {
 		Fongo fongo = new Fongo("mongo server 1");
 		MongoClient mongoClient = fongo.getMongo();
 		mongoTestHelper = new MongoTestHelper(mongoClient);
-		database = new MongoDatabaseWrapper(mongoClient);
+		database = new MongoDatabaseWrapper(mongoClient, "test", MongoDatabaseWrapper.PASSWORD);
 		sut = new PasswordManagerTester(database);
 	}
 	

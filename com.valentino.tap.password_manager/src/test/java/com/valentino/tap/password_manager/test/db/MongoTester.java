@@ -11,7 +11,7 @@ public class MongoTester implements SUT {
 	private MongoDatabaseWrapper mongoDatabase;
 
 	public MongoTester(MongoClient mongoClient) {
-		mongoDatabase = new MongoDatabaseWrapper(mongoClient);
+		mongoDatabase = new MongoDatabaseWrapper(mongoClient, "test", MongoDatabaseWrapper.PASSWORD);
 	}
 
 	@Override

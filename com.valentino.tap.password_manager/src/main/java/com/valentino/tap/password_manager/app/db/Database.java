@@ -19,4 +19,10 @@ public interface Database {
 	public void update(Password password);
 
 	public List<Password> getSearchedPasswords(String text);
+	
+	public List<String> getUsers();
+
+	public Database login(String username, String database, String password);
+
+	public Database register(String username, String database, String password);
 }

@@ -1,6 +1,7 @@
 package com.valentino.tap.password_manager.app.gui;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -32,6 +33,7 @@ public class EditDialog extends Dialog {
 	private Text passwordField;
 	private DateTime expirationField;
 	private Button okButton;
+	private Date expiration;
 
 
 	public EditDialog (PasswordManager passwordManager, Password password, Shell parent) {
@@ -47,6 +49,24 @@ public class EditDialog extends Dialog {
 		shell.layout();
 		shell.forceActive();
 	}
+	
+	private boolean checkExpiration() {
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		expiration = Password.createDate(expirationField.getYear(), expirationField.getMonth(), expirationField.getDay());
+		if (expiration.before(calendar.getTime())) {
+			/* MessageBox attualmente non testabile con SWTBot
+			 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
+			 */
+			MessageDialog messageDialog = new MessageDialog(shell, Labels.ERROR_TITLE, Labels.EXPIRED_ERROR_MSG);
+			messageDialog.eventLoop(Display.getDefault());
+			return false;
+		}
+		return true;
+	}
 
 	private void setAddMode() {
 		shell.setText(Labels.ADD_TITLE);
@@ -54,19 +74,20 @@ public class EditDialog extends Dialog {
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Password newPassword = new Password(websiteField.getText(), userField.getText(), passwordField.getText(), 
-						Password.createDate(expirationField.getYear(), expirationField.getMonth(), expirationField.getDay()));
-				if(passwordManager.addPassword(newPassword))
-					shell.dispose();
-				else {
-					/* MessageBox attualmente non testabile con SWTBot
-					 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
-					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK);
-					messageBox.setText(Labels.ERROR_TITLE);
-					messageBox.setMessage(Labels.EXISTS_MSG);
-					messageBox.open();*/
-					MessageDialog messageDialog = new MessageDialog(shell, Labels.ERROR_TITLE, Labels.EXISTS_MSG);
-					messageDialog.eventLoop(Display.getDefault());
+				if (checkExpiration()) {
+					Password newPassword = new Password(websiteField.getText(), userField.getText(), passwordField.getText(), expiration);
+					if(passwordManager.addPassword(newPassword))
+						shell.dispose();
+					else {
+						/* MessageBox attualmente non testabile con SWTBot
+						 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
+						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK);
+						messageBox.setText(Labels.ERROR_TITLE);
+						messageBox.setMessage(Labels.EXISTS_MSG);
+						messageBox.open();*/
+						MessageDialog messageDialog = new MessageDialog(shell, Labels.ERROR_TITLE, Labels.EXISTS_MSG);
+						messageDialog.eventLoop(Display.getDefault());
+					}
 				}
 			}
 		});
@@ -88,24 +109,26 @@ public class EditDialog extends Dialog {
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				password.setWebsite(websiteField.getText());
-				password.setUsername(userField.getText());
-				password.setPassw(passwordField.getText());
-				password.setExpiration(Password.createDate(expirationField.getYear(), expirationField.getMonth(), expirationField.getDay()));
+				if (checkExpiration()) {
+					password.setWebsite(websiteField.getText());
+					password.setUsername(userField.getText());
+					password.setPassw(passwordField.getText());
+					password.setExpiration(expiration);
 
-				if(passwordManager.existsPassword(password) && !(password.getWebsite().equals(oldWebsite) && password.getUsername().equals(oldUser))) {
-					/* MessageBox attualmente non testabile con SWTBot
-					 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
+					if(passwordManager.existsPassword(password) && !(password.getWebsite().equals(oldWebsite) && password.getUsername().equals(oldUser))) {
+						/* MessageBox attualmente non testabile con SWTBot
+						 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
 						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK);
 						messageBox.setText(Labels.ERROR_TITLE);
 						messageBox.setMessage(Labels.EXISTS_MSG);
 						messageBox.open();
-					 */
-					MessageDialog messageDialog = new MessageDialog(shell, Labels.ERROR_TITLE, Labels.EXISTS_MSG);
-					messageDialog.eventLoop(Display.getDefault());
-				} else {
-					passwordManager.updatePassword(password);
-					shell.dispose();
+						 */
+						MessageDialog messageDialog = new MessageDialog(shell, Labels.ERROR_TITLE, Labels.EXISTS_MSG);
+						messageDialog.eventLoop(Display.getDefault());
+					} else {
+						passwordManager.updatePassword(password);
+						shell.dispose();
+					}
 				}
 			}
 		});

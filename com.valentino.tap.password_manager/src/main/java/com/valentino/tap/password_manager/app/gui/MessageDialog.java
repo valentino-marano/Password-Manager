@@ -10,13 +10,31 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 public class MessageDialog extends Dialog {
 	
 	private Shell shell;
+	private String title;
+	private String message;
+	private String text;
 
 	public MessageDialog(Shell parent, String title, String message) {
 		super(parent);
+		this.title = title;
+		this.message = message;
+		createDialog();
+	}
+	
+	public MessageDialog(Shell parent, String title, String message, String text) {
+		super(parent);
+		this.title = title;
+		this.message = message;
+		this.text = text;
+		createDialog();
+	}
+	
+	private void createDialog() {
 		shell = new Shell(getParent(), SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL);
 		shell.setBounds(300, 300, 400, 100);
 		shell.setMinimumSize(shell.getSize());
@@ -24,6 +42,14 @@ public class MessageDialog extends Dialog {
 		shell.setLayout(new GridLayout(1, true));
 		Label messageLabel = new Label(shell, SWT.NONE);
 		messageLabel.setText(message);
+		
+		if (this.text != null) {
+			Text errorText = new Text(shell, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
+		    errorText.setText(text);
+		    errorText.setLayoutData(new GridData(GridData.FILL_BOTH));
+		    shell.setBounds(300, 300, 400, 200);
+			shell.setMinimumSize(shell.getSize());
+		}
 		
 		GridData gridData = new GridData();
 		gridData.horizontalAlignment = GridData.CENTER;

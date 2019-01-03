@@ -52,7 +52,7 @@ public class PasswordManagerGUITest {
 							// open and layout the shell
 							Fongo fongo = new Fongo("mongo server 1");
 							MongoClient mongoClient = fongo.getMongo();
-							Database database = new MongoDatabaseWrapper(mongoClient);
+							Database database = new MongoDatabaseWrapper(mongoClient, "test", MongoDatabaseWrapper.PASSWORD);
 							passwordManager = new PasswordManager(database);
 							PasswordManagerGUI window = new PasswordManagerGUI(passwordManager);
 							window.open();
@@ -97,7 +97,7 @@ public class PasswordManagerGUITest {
 			}
 		});
 	}
-	
+
 	@Test
 	public void testViewGUI() {
 		assertEquals(Labels.FRAME_TITLE, bot.activeShell().getText());
@@ -177,6 +177,28 @@ public class PasswordManagerGUITest {
 		SWTBotTable table = bot.table();
 		assertEquals(1, table.rowCount());
 	}
+	
+	/* Attualmente non testabile per bug in SWTBotDateTime.setDate()
+	@Test
+	public void testAddExpiredPassword() {
+		bot.button(Labels.ADD_LABEL).click();
+		SWTBotShell addShell = bot.activeShell();
+		SWTBot addBot = new SWTBot(addShell.widget);
+		addBot.text("", 0).setText("sito1");
+		addBot.text("", 0).setText("user1");
+		addBot.text("", 0).setText("password1");
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		addBot.dateTime().setDate(calendar.getTime());
+		addBot.button(Labels.OK_LABEL).click();
+		SWTBotShell errorShell = addBot.activeShell();
+		SWTBot errorBot = new SWTBot(errorShell.widget);
+		assertEquals(Labels.ERROR_TITLE, errorShell.getText());
+		errorBot.label(Labels.EXPIRED_ERROR_MSG);
+		errorBot.button(Labels.OK_LABEL).click();
+		errorBot.waitUntil(Conditions.shellCloses(errorShell));
+		assertEquals(Labels.ADD_TITLE, addBot.activeShell().getText());
+	}
+	*/
 	
 	@Test
 	public void testAddPasswordAlreadyExists() {
@@ -284,6 +306,48 @@ public class PasswordManagerGUITest {
 		SWTBot errorBot = new SWTBot(errorShell.widget);
 		assertEquals(Labels.ERROR_TITLE, errorShell.getText());
 		errorBot.label(Labels.EXISTS_MSG);
+		errorBot.button(Labels.OK_LABEL).click();
+		errorBot.waitUntil(Conditions.shellCloses(errorShell));
+		assertEquals(Labels.EDIT_TITLE, editBot.activeShell().getText());
+	}
+	
+	/* Attualmente non testabile per bug in SWTBotDateTime.setDate()
+	 * Temporaneamente testato con omonimo test sottostante
+	@Test
+	public void testEditExpiredPassword() {
+		bot.button(Labels.EDIT_LABEL).click();
+		SWTBotShell editShell = bot.activeShell();
+		SWTBot editBot = new SWTBot(editShell.widget);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		editBot.dateTime().setDate(calendar.getTime());
+		editBot.button(Labels.OK_LABEL).click();
+		SWTBotShell errorShell = addBot.activeShell();
+		SWTBot errorBot = new SWTBot(errorShell.widget);
+		assertEquals(Labels.ERROR_TITLE, errorShell.getText());
+		errorBot.label(Labels.EXPIRED_ERROR_MSG);
+		errorBot.button(Labels.OK_LABEL).click();
+		errorBot.waitUntil(Conditions.shellCloses(errorShell));
+		assertEquals(Labels.EDIT_TITLE, addBot.activeShell().getText());
+	}
+	*/
+	
+	@Test
+	public void testEditExpiredPassword() {
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
+		bot.button(Labels.REFRESH_LABEL).click();
+		SWTBotShell expiredShell = bot.activeShell();
+		SWTBot expiredBot = new SWTBot(expiredShell.widget);
+		expiredBot.button(Labels.OK_LABEL).click();
+		bot.table().getTableItem(0).click();
+		bot.button(Labels.EDIT_LABEL).click();
+		SWTBotShell editShell = bot.activeShell();
+		SWTBot editBot = new SWTBot(editShell.widget);
+		editBot.button(Labels.OK_LABEL).click();
+		SWTBotShell errorShell = editBot.activeShell();
+		SWTBot errorBot = new SWTBot(errorShell.widget);
+		assertEquals(Labels.ERROR_TITLE, errorShell.getText());
+		errorBot.label(Labels.EXPIRED_ERROR_MSG);
 		errorBot.button(Labels.OK_LABEL).click();
 		errorBot.waitUntil(Conditions.shellCloses(errorShell));
 		assertEquals(Labels.EDIT_TITLE, editBot.activeShell().getText());

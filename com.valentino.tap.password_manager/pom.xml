@@ -79,7 +79,7 @@
 			<artifactId>swt-bot-swt-finder</artifactId>
 			<version>2.7.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/org.eclipse.swtbot.swt.finder_2.7.0.201806111355.jar</systemPath>
+			<systemPath>${project.basedir}/lib/org.eclipse.swtbot.swt.finder_2.8.0.201811271510.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
@@ -158,7 +158,7 @@
 									<dataFile>${jacoco.data.it.file}</dataFile>
 									<outputDirectory>${jacoco.report.it.path}</outputDirectory>
 									<excludes>
-										<exclude>**/com/valentino/tap/password_manager/app/gui/*</exclude>
+										<exclude>**/com/valentino/tap/password_manager/app/gui/Labels.class</exclude>
 										<exclude>**/com/valentino/tap/password_manager/app/Application.class</exclude>
 									</excludes>															
 								</configuration>

@@ -12,7 +12,7 @@ public class MongoTestHelper {
 	private MongoCollection passwords;
 	
 	public MongoTestHelper(MongoClient mongoClient) {
-		DB db = mongoClient.getDB("PasswordManager");		
+		DB db = mongoClient.getDB("test");		
 		Jongo jongo = new Jongo(db);
 		jongo.getCollection("password").drop();
 		passwords = jongo.getCollection("password");

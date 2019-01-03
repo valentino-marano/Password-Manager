@@ -1,44 +1,32 @@
 package com.valentino.tap.password_manager.app;
 
 import java.net.UnknownHostException;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Display;
 
 import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
 import com.valentino.tap.password_manager.app.db.Database;
 import com.valentino.tap.password_manager.app.db.MongoDatabaseWrapper;
+import com.valentino.tap.password_manager.app.gui.LoginGUI;
 import com.valentino.tap.password_manager.app.gui.PasswordManagerGUI;
 
 public class Application {
 	static final Logger LOGGER = Logger.getLogger(Application.class);
-	
+
 	public static void main(String[] args) throws UnknownHostException {
-		String mongoHost = "localhost";
-		if (args.length > 0)
-			mongoHost = args[0];
-		Database database = new MongoDatabaseWrapper(new MongoClient(mongoHost));
-		PasswordManager passwordManager = new PasswordManager(database);
-		LOGGER.info("Adding password...");
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", calendar.getTime()));
-		LOGGER.info("Adding password...");
-		calendar.add(Calendar.MONTH, 1);
-		passwordManager.addPassword(new Password("sito2", "user2", "password2", calendar.getTime()));
-		
-		LOGGER.info("List of all passwords:");
-		List<Password> passwords = passwordManager.getAllPasswords();
-		passwords.stream().forEach(password -> 
-			LOGGER.info("Password: " + password.getWebsite() + " - " + 
-				password.getUsername() + " - " + password.getPassw() + " - " + password.getExpiration()));
-		LOGGER.info("Terminates.");
-		
-		PasswordManagerGUI app = new PasswordManagerGUI(passwordManager);
-		app.open();
-		app.eventLoop(Display.getDefault());
+		ServerAddress serverAddress = new ServerAddress("localhost", 27017);
+		MongoClient mongoAdmin = new MongoClient(serverAddress);
+		Database adminDB = new MongoDatabaseWrapper(mongoAdmin, "admin", MongoDatabaseWrapper.ADMIN);
+
+		LoginGUI login = new LoginGUI(adminDB);
+		login.open();
+		Database database = login.eventLoop(Display.getDefault());
+		if (database != null) {
+			PasswordManager passwordManager = new PasswordManager(database);
+			PasswordManagerGUI app = new PasswordManagerGUI(passwordManager);
+			app.open();
+			app.eventLoop(Display.getDefault());
+		}
 	}		
 }
