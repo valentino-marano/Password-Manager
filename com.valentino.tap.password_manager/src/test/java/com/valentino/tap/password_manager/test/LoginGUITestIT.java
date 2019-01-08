@@ -150,6 +150,16 @@ public class LoginGUITestIT {
 	}
 	
 	@Test
+	public void testLoginButtonEnableDisable() {
+		bot.comboBox().setSelection("Test");
+		assertFalse(bot.button(Labels.LOGIN_LABEL).isEnabled());
+		bot.text().setText("123");
+		assertTrue(bot.button(Labels.LOGIN_LABEL).isEnabled());
+		bot.text().setText("");
+		assertFalse(bot.button(Labels.LOGIN_LABEL).isEnabled());
+	}
+	
+	@Test
 	public void testRegisterSuccess() {
 		SWTBotShell loginShell = bot.activeShell();
 		bot.tabItem(Labels.REGISTER_LABEL).activate();
