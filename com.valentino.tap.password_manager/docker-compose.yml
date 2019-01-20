@@ -1,0 +1,16 @@
+version: "2"
+
+services:
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
+  app:
+    image: password_manager
+    environment:
+      - DISPLAY
+    depends_on:
+      - "db"
+    network_mode: "host"
+
+  

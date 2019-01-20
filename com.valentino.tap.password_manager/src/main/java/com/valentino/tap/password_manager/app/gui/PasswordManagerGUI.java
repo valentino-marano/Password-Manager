@@ -44,6 +44,7 @@ public class PasswordManagerGUI {
 
 	public PasswordManagerGUI(PasswordManager passwordManager) {
 		this.passwordManager = passwordManager;
+		shell = new Shell();
 	}
 
 	public void open() {
@@ -94,10 +95,10 @@ public class PasswordManagerGUI {
 		if (expiredPasswords) {
 			/* MessageBox attualmente non testabile con SWTBot
 			 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
-			MessageBox messageBox = new MessageBox(shell, SWT.ICON_WARNING | SWT.OK);
-			messageBox.setText(Labels.EXPIRED_TITLE);
-			messageBox.setMessage(Labels.EXPIRED_MSG);
-			messageBox.open();
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_WARNING | SWT.OK)
+			messageBox.setText(Labels.EXPIRED_TITLE)
+			messageBox.setMessage(Labels.EXPIRED_MSG)
+			messageBox.open()
 			*/
 			MessageDialog messageDialog = new MessageDialog(shell, Labels.EXPIRED_TITLE, Labels.EXPIRED_MSG);
 			messageDialog.eventLoop(Display.getDefault());
@@ -105,7 +106,6 @@ public class PasswordManagerGUI {
 	}
 
 	private void createGUI() {
-		shell = new Shell();
 		shell.setText(Labels.FRAME_TITLE);
 		shell.setBounds(300, 300, 750, 500);
 		shell.setMinimumSize(750, 500);
@@ -114,59 +114,22 @@ public class PasswordManagerGUI {
 		Button addButton = new Button(shell, SWT.PUSH);
 		addButton.setText(Labels.ADD_LABEL);
 		addButton.setToolTipText(Labels.ADD_HINT);
-		addButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				EditDialog edit = new EditDialog(passwordManager, null, shell);
-				edit.eventLoop(Display.getDefault());
-				getPasswordsFromDB();
-				refresh();
-				checkExpirations();
-			}
-		});
+		addButton.addSelectionListener(addButtonAction);
 
 		Button editButton = new Button(shell, SWT.PUSH);
 		editButton.setText(Labels.EDIT_LABEL);
 		editButton.setToolTipText(Labels.EDIT_HINT);
-		editButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (selected != null) {
-					EditDialog edit = new EditDialog(passwordManager, selected, shell);
-					edit.eventLoop(Display.getDefault());
-					getPasswordsFromDB();
-					refresh();
-					checkExpirations();
-				}
-			}
-		});
+		editButton.addSelectionListener(editButtonAction);
 
 		Button deleteButton = new Button(shell, SWT.PUSH);
 		deleteButton.setText(Labels.DELETE_LABEL);
 		deleteButton.setToolTipText(Labels.DELETE_HINT);
-		deleteButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (selected != null) {
-					passwordManager.deletePassword(selected);
-					getPasswordsFromDB();
-					refresh();
-				}
-			}
-		});
+		deleteButton.addSelectionListener(deleteButtonAction);
 
 		Button refreshButton = new Button(shell, SWT.PUSH);
 		refreshButton.setText(Labels.REFRESH_LABEL);
 		refreshButton.setToolTipText(Labels.REFRESH_HINT);
-		refreshButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				getPasswordsFromDB();
-				refresh();
-				checkExpirations();
-				selected = null;
-			}
-		});
+		refreshButton.addSelectionListener(refreshButtonAction);
 
 		GridData gridDataSearch = new GridData();
 		gridDataSearch.horizontalAlignment = GridData.FILL;
@@ -179,18 +142,7 @@ public class PasswordManagerGUI {
 			refresh();			
 		});
 		
-		searchField.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				if (!searchedString.equals(searchField.getText()))
-					checkExpirations();				
-			}
-
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				searchedString = searchField.getText();
-			}
-		});
+		searchField.addFocusListener(searchFieldAction);
 		
 		GridData gridDataTable = new GridData();
 		gridDataTable.horizontalAlignment = GridData.FILL;
@@ -217,6 +169,7 @@ public class PasswordManagerGUI {
 				LOGGER.info("Selected Password " +  selected.getWebsite() + " " + selected.getUsername());
 			}
 		});
+		
 		for (TableColumn column : table.getColumns()) {
 			column.addListener(SWT.Selection, (Event e) -> {
 				TableColumn clickedColumn = (TableColumn) e.widget;
@@ -250,6 +203,64 @@ public class PasswordManagerGUI {
 		table.setLayoutData(gridDataTable);			
 	}
 
+	private SelectionAdapter editButtonAction = new SelectionAdapter() {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			if (selected != null) {
+				EditDialog edit = new EditDialog(passwordManager, selected, shell);
+				edit.eventLoop(Display.getDefault());
+				getPasswordsFromDB();
+				refresh();
+				checkExpirations();
+			}
+		}
+	};
+	
+	private SelectionAdapter addButtonAction = new SelectionAdapter() {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			EditDialog edit = new EditDialog(passwordManager, null, shell);
+			edit.eventLoop(Display.getDefault());
+			getPasswordsFromDB();
+			refresh();
+			checkExpirations();
+		}
+	};
+
+	private SelectionAdapter deleteButtonAction = new SelectionAdapter() {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			if (selected != null) {
+				passwordManager.deletePassword(selected);
+				getPasswordsFromDB();
+				refresh();
+			}
+		}
+	};
+	
+	private SelectionAdapter refreshButtonAction = new SelectionAdapter() {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			getPasswordsFromDB();
+			refresh();
+			checkExpirations();
+			selected = null;
+		}
+	};
+	
+	private FocusListener searchFieldAction = new FocusListener() {
+		@Override
+		public void focusLost(FocusEvent arg0) {
+			if (!searchedString.equals(searchField.getText()))
+				checkExpirations();				
+		}
+
+		@Override
+		public void focusGained(FocusEvent arg0) {
+			searchedString = searchField.getText();
+		}
+	};
+	
 	public void eventLoop(Display display) {
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

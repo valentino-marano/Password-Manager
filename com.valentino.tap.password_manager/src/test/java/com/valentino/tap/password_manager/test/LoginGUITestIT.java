@@ -56,10 +56,8 @@ public class LoginGUITestIT {
 							window.open();
 							shell = window.getShell();
 							
-							// wait for the test setup
 							swtBarrier.await();
 
-							// run the event loop
 							Database database = window.eventLoop(Display.getDefault());
 							if (database != null) {
 								PasswordManager passwordManager = new PasswordManager(database);
@@ -81,7 +79,6 @@ public class LoginGUITestIT {
 
 	@Before
 	public final void setupSWTBot() throws InterruptedException, BrokenBarrierException {
-		// synchronize with the thread opening the shell
 		swtBarrier.await();
 		bot = new SWTBot(shell);
 	}
@@ -90,7 +87,7 @@ public class LoginGUITestIT {
 	public void closeShell() throws InterruptedException {
 		while (!bot.activeShell().getText().equals(Labels.FRAME_TITLE) && !bot.activeShell().getText().equals(Labels.LOGIN_TITLE))
 			bot.activeShell().close();
-		// close the shell
+		
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
 				shell.close();

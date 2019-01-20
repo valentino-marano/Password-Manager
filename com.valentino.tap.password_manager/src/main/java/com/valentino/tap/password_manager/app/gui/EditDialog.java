@@ -81,10 +81,11 @@ public class EditDialog extends Dialog {
 					else {
 						/* MessageBox attualmente non testabile con SWTBot
 						 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
-						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK);
-						messageBox.setText(Labels.ERROR_TITLE);
-						messageBox.setMessage(Labels.EXISTS_MSG);
-						messageBox.open();*/
+						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK)
+						messageBox.setText(Labels.ERROR_TITLE)
+						messageBox.setMessage(Labels.EXISTS_MSG)
+						messageBox.open()
+						*/
 						MessageDialog messageDialog = new MessageDialog(shell, Labels.ERROR_TITLE, Labels.EXISTS_MSG);
 						messageDialog.eventLoop(Display.getDefault());
 					}
@@ -118,10 +119,10 @@ public class EditDialog extends Dialog {
 					if(passwordManager.existsPassword(password) && !(password.getWebsite().equals(oldWebsite) && password.getUsername().equals(oldUser))) {
 						/* MessageBox attualmente non testabile con SWTBot
 						 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
-						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK);
-						messageBox.setText(Labels.ERROR_TITLE);
-						messageBox.setMessage(Labels.EXISTS_MSG);
-						messageBox.open();
+						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK)
+						messageBox.setText(Labels.ERROR_TITLE)
+						messageBox.setMessage(Labels.EXISTS_MSG)
+						messageBox.open()
 						 */
 						MessageDialog messageDialog = new MessageDialog(shell, Labels.ERROR_TITLE, Labels.EXISTS_MSG);
 						messageDialog.eventLoop(Display.getDefault());

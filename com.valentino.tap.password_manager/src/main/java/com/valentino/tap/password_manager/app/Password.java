@@ -74,10 +74,6 @@ public class Password {
 	public static Date createDate(int year, int month, int day) {
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
 		calendar.set(year, month, day);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
 		return calendar.getTime();
 	}
 }

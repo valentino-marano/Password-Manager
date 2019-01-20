@@ -15,20 +15,20 @@ import org.eclipse.swt.widgets.Text;
 public class MessageDialog extends Dialog {
 	
 	private Shell shell;
-	private String title;
+	private String dialogTitle;
 	private String message;
 	private String text;
 
 	public MessageDialog(Shell parent, String title, String message) {
 		super(parent);
-		this.title = title;
+		this.dialogTitle = title;
 		this.message = message;
 		createDialog();
 	}
 	
 	public MessageDialog(Shell parent, String title, String message, String text) {
 		super(parent);
-		this.title = title;
+		this.dialogTitle = title;
 		this.message = message;
 		this.text = text;
 		createDialog();
@@ -38,7 +38,7 @@ public class MessageDialog extends Dialog {
 		shell = new Shell(getParent(), SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL);
 		shell.setBounds(300, 300, 400, 100);
 		shell.setMinimumSize(shell.getSize());
-		shell.setText(title);
+		shell.setText(dialogTitle);
 		shell.setLayout(new GridLayout(1, true));
 		Label messageLabel = new Label(shell, SWT.NONE);
 		messageLabel.setText(message);

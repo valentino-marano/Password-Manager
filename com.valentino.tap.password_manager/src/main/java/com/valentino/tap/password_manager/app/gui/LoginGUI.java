@@ -104,16 +104,13 @@ public class LoginGUI {
 			}
 		});
 		
-		passwordFieldLogin.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				if (passwordFieldLogin.getText().isEmpty())
-					loginButton.setEnabled(false);
-				else
-					loginButton.setEnabled(true);
-			}
+		passwordFieldLogin.addModifyListener((ModifyEvent arg0) -> {
+			if (passwordFieldLogin.getText().isEmpty())
+				loginButton.setEnabled(false);
+			else
+				loginButton.setEnabled(true);
 		});
-				
+					
 		GridData gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.horizontalSpan = 2;

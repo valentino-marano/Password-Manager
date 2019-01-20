@@ -134,7 +134,7 @@
 									<excludes>
 										<exclude>**/com/valentino/tap/password_manager/app/gui/Labels.class</exclude>
 										<exclude>**/com/valentino/tap/password_manager/app/Application.class</exclude>
-									</excludes>	
+									</excludes>
 								</configuration>
 							</execution><!-- For Integration tests -->
 							<execution>
@@ -160,7 +160,7 @@
 									<excludes>
 										<exclude>**/com/valentino/tap/password_manager/app/gui/Labels.class</exclude>
 										<exclude>**/com/valentino/tap/password_manager/app/Application.class</exclude>
-									</excludes>															
+									</excludes>
 								</configuration>
 							</execution>
 						</executions>
@@ -242,8 +242,8 @@
 			<plugin>
 				<groupId>org.pitest</groupId>
 				<artifactId>pitest-maven</artifactId>
-				<version>1.1.10</version>
-				<configuration>
+				<version>1.4.3</version>
+                <configuration>
 					<targetClasses>
 						<param>${project.groupId}.${project.name}.app*</param>
 					</targetClasses>
@@ -253,6 +253,14 @@
 					<mutators>
 						<mutator>ALL</mutator>
 					</mutators>
+					<avoidCallsTo>
+    					<avoidCallsTo>java.util.logging</avoidCallsTo>
+    					<avoidCallsTo>org.apache.log4j</avoidCallsTo>
+    					<avoidCallsTo>org.slf4j</avoidCallsTo>
+    					<avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
+					</avoidCallsTo>
+					<excludedClasses>${project.groupId}.${project.name}.app.Application*</excludedClasses>
+					<withHistory>true</withHistory>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -268,6 +276,24 @@
 									<port>27017:27017</port>
 								</ports>
 							</run>
+						</image>
+						<image>
+							<name>${project.artifactId}</name>
+							<build>
+								<dockerFileDir>${project.basedir}/src/main/resources</dockerFileDir>
+								<args>
+									<fatjar>${project.artifactId}-${project.version}-all.jar</fatjar>
+								</args>
+								<assembly>
+									<inline>
+										<files>
+											<file>
+												<source>${project.build.directory}/${project.artifactId}-${project.version}-all.jar</source>
+											</file>
+										</files>
+									</inline>
+								</assembly>
+							</build>
 						</image>
 					</images>
 					<showLogs>true</showLogs>
@@ -287,6 +313,13 @@
 							<goal>stop</goal>
 						</goals>
 					</execution>
+					<execution>
+						<id>docker:build</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -303,8 +336,7 @@
 							<shadedArtifactAttached>true</shadedArtifactAttached>
 							<shadedClassifierName>all</shadedClassifierName>
 							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>${project.groupId}.${project.name}.app.Application</mainClass>
 								</transformer>
 							</transformers>
