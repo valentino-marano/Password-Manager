@@ -143,22 +143,22 @@ public class EditDialog extends Dialog {
 
 		// Labels & Input Fields
 		Label websiteLabel = new Label(shell, SWT.NONE);
-		websiteLabel.setText(Labels.COLUMN_HEADERS[0]);
+		websiteLabel.setText(Labels.getColumnHeaders(0));
 		websiteLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 		websiteField = new Text(shell, SWT.SINGLE | SWT.BORDER);
 		websiteField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
 		Label userLabel = new Label(shell, SWT.NONE);
-		userLabel.setText(Labels.COLUMN_HEADERS[1]);
+		userLabel.setText(Labels.getColumnHeaders(1));
 		userLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 		userField = new Text(shell, SWT.SINGLE | SWT.BORDER);
 		userField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
 		Label passwordLabel = new Label(shell, SWT.NONE);
-		passwordLabel.setText(Labels.COLUMN_HEADERS[2]);
+		passwordLabel.setText(Labels.getColumnHeaders(2));
 		passwordLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 		passwordField = new Text(shell, SWT.SINGLE | SWT.BORDER);
 		passwordField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
 		Label expirationLabel = new Label(shell, SWT.NONE);
-		expirationLabel.setText(Labels.COLUMN_HEADERS[3]);
+		expirationLabel.setText(Labels.getColumnHeaders(3));
 		expirationLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 		expirationField = new DateTime(shell, SWT.CALENDAR);
 		expirationField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));		
@@ -177,14 +177,7 @@ public class EditDialog extends Dialog {
 		okButton = new Button(shell, SWT.PUSH);
 		okButton.setText(Labels.OK_LABEL);
 
-		ModifyListener fieldListener = ((ModifyEvent arg0) -> {
-			if (websiteField.getText().isEmpty() || 
-					userField.getText().isEmpty() || 
-					passwordField.getText().isEmpty())
-				okButton.setEnabled(false);
-			else
-				okButton.setEnabled(true);
-		});
+		ModifyListener fieldListener = ((ModifyEvent arg0) -> okButton.setEnabled(!websiteField.getText().isEmpty() && !userField.getText().isEmpty() && !passwordField.getText().isEmpty()));
 
 		websiteField.addModifyListener(fieldListener);
 		userField.addModifyListener(fieldListener);

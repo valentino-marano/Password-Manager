@@ -11,6 +11,11 @@ addons:
   apt:
     packages:
     - metacity
+  
+  sonarcloud:
+    organization: "valentino-marano-github"
+    token:
+      secure: "HhiP6qdREnIA7sPSj7qLOoKg1Td1+9bwMNJGsRVijeeEmL2InvyEJx8FR4btsXEal5A9jiVSgEMEi91ycWBNPUXB4scKLjplsNv2x7oKV/8GnhSY0d9kVcmI9FnOddlfzbMt6WvpNwrnMfHzTqTGzvqsWkg12Qbmo1X9zwzPTRdFNJ3FirvKh9f39L1SlaGwTbMDv2x6MjGGvPLkLa5WkfADNOko1pG9wbVMAmpt9ZQJRY0OL471PcKEGIpTx6GxrS32/wJLBb9XNOumyYYX4Ll5xfKe2ZDCXRfFipJO12c7qCmg+gFwpsjHVx98EhvoYt/GT8LmuAeF7pgkM6oJTndP6AhiXPvH1xHx0pT0HhAvydhj0zHiPalnIQP9ft2FCo5xSp02DzpLT5aqjaRE0Nw64d1DR8ZpE9jCVXRE86lcnN3nDRngv/m06Tqw5a+FnbJtyldeTn8vcFNe34j9X7YfbMLWDa3vxt3r05hnAe356YOmsOBstlBSwSBY2ynywY9jtpJDc4yUdUQHhSA3iwcX3lk6GJs4koIIDEbMW4Wx8PgzyOmkVg8Va86j4KZaBgThZjl3Ek4x0NeJP3DfOtIY/beiLkZ2IUrdm0uy2if0yV3Iv7qgjdvLuTDG7+UnJpmUDhC47nOs+G/wbOeZAheXajb0etNxVoxY7dESjBw="
 
 sudo: false
 
@@ -26,4 +31,4 @@ before_script:
 
 script:
   - export
-  - mvn -f com.valentino.tap.password_manager/pom.xml clean verify -Pjacoco coveralls:report
+  - mvn -f com.valentino.tap.password_manager/pom.xml clean verify -Pjacoco coveralls:report sonar:sonar

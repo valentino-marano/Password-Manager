@@ -115,7 +115,7 @@ public abstract class AbstractTest {
 		assertEquals("site2", allPasswords.get(0).getWebsite());
 		assertEquals("user2", allPasswords.get(0).getUsername());
 		assertEquals("password2", allPasswords.get(0).getPassw());
-		assertEquals(Password.simpleDateFormat.format(date1), allPasswords.get(0).getExpiration());
+		assertEquals(password.getSimpleDateFormat().format(date1), allPasswords.get(0).getExpiration());
 	}
 
 	@Test

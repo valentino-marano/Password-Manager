@@ -87,7 +87,7 @@ public class PasswordManagerGUI {
 			}
 		}
 		
-		for (int i = 0; i < Labels.COLUMN_HEADERS.length; i++)
+		for (int i = 0; i < Labels.getColumnHeadersLength(); i++)
 			table.getColumn(i).pack();
 	}
 	
@@ -154,9 +154,9 @@ public class PasswordManagerGUI {
 		table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		for (int i = 0; i < Labels.COLUMN_HEADERS.length; i++) {
+		for (int i = 0; i < Labels.getColumnHeadersLength(); i++) {
 			TableColumn column = new TableColumn(table, SWT.NULL);
-			column.setText(Labels.COLUMN_HEADERS[i]);
+			column.setText(Labels.getColumnHeaders(i));
 		}
 
 		getPasswordsFromDB();

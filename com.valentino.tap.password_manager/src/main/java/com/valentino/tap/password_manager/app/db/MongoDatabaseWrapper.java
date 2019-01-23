@@ -3,7 +3,6 @@ package com.valentino.tap.password_manager.app.db;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -38,7 +37,9 @@ public class MongoDatabaseWrapper implements Database {
 	}
 	
 	public List<Password> getPasswordsByWebSite(String website) {
-		Iterable<Password> iterable = passwords.find("{website: #}", Pattern.compile(website)).as(Password.class);
+		Iterable<Password> iterable = passwords.find("{website: {$regex: #}}", website).as(Password.class);
+		// TODO
+		//		Iterable<Password> iterable = passwords.find("{website: #}", Pattern.compile(website)).as(Password.class);
 		return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
 	}
 
@@ -63,7 +64,9 @@ public class MongoDatabaseWrapper implements Database {
 
 	@Override
 	public List<Password> getSearchedPasswords(String pattern) {
-		Iterable<Password> iterable = passwords.find("{$or:[{website: #}, {username: #}]}", Pattern.compile(pattern), Pattern.compile(pattern)).as(Password.class);
+		Iterable<Password> iterable = passwords.find("{$or:[{website: {$regex: #}}, {username: {$regex: #}}]}", pattern, pattern).as(Password.class);
+		// TODO
+		//		Iterable<Password> iterable = passwords.find("{$or:[{website: #}, {username: #}]}", Pattern.compile(pattern), Pattern.compile(pattern)).as(Password.class);
 		return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
 	}
 

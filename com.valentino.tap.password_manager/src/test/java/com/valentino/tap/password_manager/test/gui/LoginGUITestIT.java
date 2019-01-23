@@ -1,4 +1,4 @@
-package com.valentino.tap.password_manager.test;
+package com.valentino.tap.password_manager.test.gui;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -99,9 +99,9 @@ public class LoginGUITestIT {
 	public void testViewLogin() {
 		assertEquals(Labels.LOGIN_TITLE, bot.activeShell().getText());
 		bot.tabItem(Labels.LOGIN_LABEL);
-		bot.label(Labels.COLUMN_HEADERS[1]);
+		bot.label(Labels.getColumnHeaders(1));
 		bot.comboBox();
-		bot.label(Labels.COLUMN_HEADERS[2]);
+		bot.label(Labels.getColumnHeaders(2));
 		bot.text();
 		SWTBotButton loginButton = bot.button(Labels.LOGIN_LABEL);
 		assertFalse(loginButton.isEnabled());
@@ -110,9 +110,9 @@ public class LoginGUITestIT {
 	@Test
 	public void testViewRegister() {
 		bot.tabItem(Labels.REGISTER_LABEL).activate();
-		bot.label(Labels.COLUMN_HEADERS[1]);
+		bot.label(Labels.getColumnHeaders(1));
 		bot.text(0);
-		bot.label(Labels.COLUMN_HEADERS[2]);
+		bot.label(Labels.getColumnHeaders(2));
 		bot.text(1);
 		SWTBotButton registerButton = bot.button(Labels.REGISTER_LABEL);
 		assertFalse(registerButton.isEnabled());

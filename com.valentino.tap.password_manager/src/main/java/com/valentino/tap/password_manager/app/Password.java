@@ -10,13 +10,16 @@ import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties({"simpleDateFormat"})
 public class Password {
 	
 	private String website;
 	private String username;
 	private String passw;
 	private Date expiration;
-	public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	
 	@MongoId
 	@MongoObjectId
@@ -75,5 +78,9 @@ public class Password {
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
 		calendar.set(year, month, day);
 		return calendar.getTime();
+	}
+
+	public SimpleDateFormat getSimpleDateFormat() {
+		return this.simpleDateFormat;
 	}
 }

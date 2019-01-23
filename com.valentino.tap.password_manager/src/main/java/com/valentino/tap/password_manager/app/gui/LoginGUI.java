@@ -70,7 +70,7 @@ public class LoginGUI {
 		compositeLogin.setLayout(new GridLayout(2, true));
 	    
 		Label userLabelLogin = new Label(compositeLogin, SWT.NONE);
-		userLabelLogin.setText(Labels.COLUMN_HEADERS[1]);
+		userLabelLogin.setText(Labels.getColumnHeaders(1));
 		userLabelLogin.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 		
 		Combo userComboLogin = new Combo(compositeLogin, SWT.DROP_DOWN | SWT.READ_ONLY); 
@@ -78,7 +78,7 @@ public class LoginGUI {
 		userComboLogin.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
 		
 		Label passwordLabelLogin = new Label(compositeLogin, SWT.NONE);
-		passwordLabelLogin.setText(Labels.COLUMN_HEADERS[2]);
+		passwordLabelLogin.setText(Labels.getColumnHeaders(2));
 		passwordLabelLogin.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 		
 		Text passwordFieldLogin = new Text(compositeLogin, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
@@ -104,12 +104,7 @@ public class LoginGUI {
 			}
 		});
 		
-		passwordFieldLogin.addModifyListener((ModifyEvent arg0) -> {
-			if (passwordFieldLogin.getText().isEmpty())
-				loginButton.setEnabled(false);
-			else
-				loginButton.setEnabled(true);
-		});
+		passwordFieldLogin.addModifyListener((ModifyEvent arg0) -> loginButton.setEnabled(!passwordFieldLogin.getText().isEmpty()));
 					
 		GridData gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
@@ -124,14 +119,14 @@ public class LoginGUI {
 		compositeRegister.setLayout(new GridLayout(2, true));
 		
 	    Label userLabelRegister = new Label(compositeRegister, SWT.NONE);
-	    userLabelRegister.setText(Labels.COLUMN_HEADERS[1]);
+	    userLabelRegister.setText(Labels.getColumnHeaders(1));
 	    userLabelRegister.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 	    
 	    Text userFieldRegister = new Text(compositeRegister, SWT.SINGLE | SWT.BORDER);
 	    userFieldRegister.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
 	    
 	    Label passwordLabelRegister = new Label(compositeRegister, SWT.NONE);
-	    passwordLabelRegister.setText(Labels.COLUMN_HEADERS[2]);
+	    passwordLabelRegister.setText(Labels.getColumnHeaders(2));
 	    passwordLabelRegister.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 	    
 	    Text passwordFieldRegister = new Text(compositeRegister, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
@@ -157,13 +152,7 @@ public class LoginGUI {
 			}
 		});	
 		
-		ModifyListener fieldListener = ((ModifyEvent arg0) -> {
-			if (userFieldRegister.getText().isEmpty() ||  
-					passwordFieldRegister.getText().isEmpty())
-				registerButton.setEnabled(false);
-			else
-				registerButton.setEnabled(true);
-		});
+		ModifyListener fieldListener = ((ModifyEvent arg0) -> registerButton.setEnabled(!userFieldRegister.getText().isEmpty() && !passwordFieldRegister.getText().isEmpty()));
 		
 		userFieldRegister.addModifyListener(fieldListener);
 		passwordFieldRegister.addModifyListener(fieldListener);

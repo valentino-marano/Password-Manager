@@ -1,4 +1,4 @@
-package com.valentino.tap.password_manager.test;
+package com.valentino.tap.password_manager.test.gui;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -131,7 +131,8 @@ public class PasswordManagerGUITest {
 		SWTBotTable table = bot.table();
 		assertEquals(0, bot.table().rowCount());
 		Date date1 = calendar.getTime();
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", date1));
+		Password password = new Password("sito1", "user1", "password1", date1);
+		passwordManager.addPassword(password);
 		calendar.add(Calendar.MONTH, 1);
 		Date nextMonth = calendar.getTime();
 		passwordManager.addPassword(new Password("sito2", "user2", "password2", nextMonth));
@@ -141,11 +142,11 @@ public class PasswordManagerGUITest {
 		assertEquals("sito1", table.cell(0, 0));
 		assertEquals("user1", table.cell(0, 1));
 		assertEquals("password1", table.cell(0, 2));
-		assertEquals(Password.simpleDateFormat.format(date1), table.cell(0, 3));
+		assertEquals(password.getSimpleDateFormat().format(date1), table.cell(0, 3));
 		assertEquals("sito2", table.cell(1, 0));
 		assertEquals("user2", table.cell(1, 1));
 		assertEquals("password2", table.cell(1, 2));
-		assertEquals(Password.simpleDateFormat.format(nextMonth), table.cell(1, 3));
+		assertEquals(password.getSimpleDateFormat().format(nextMonth), table.cell(1, 3));
 	}
 
 	@Test
@@ -154,13 +155,13 @@ public class PasswordManagerGUITest {
 		SWTBotShell addShell = bot.activeShell();
 		assertEquals(Labels.ADD_TITLE, addShell.getText());
 		SWTBot addBot = new SWTBot(addShell.widget);
-		addBot.label(Labels.COLUMN_HEADERS[0]);
+		addBot.label(Labels.getColumnHeaders(0));
 		addBot.text("", 0);
-		addBot.label(Labels.COLUMN_HEADERS[1]);
+		addBot.label(Labels.getColumnHeaders(1));
 		addBot.text("", 1);
-		addBot.label(Labels.COLUMN_HEADERS[2]);
+		addBot.label(Labels.getColumnHeaders(2));
 		addBot.text("", 2);
-		addBot.label(Labels.COLUMN_HEADERS[3]);
+		addBot.label(Labels.getColumnHeaders(3));
 		addBot.dateTime();
 		addBot.button(Labels.OK_LABEL);
 		addBot.button(Labels.CANCEL_LABEL);
@@ -249,13 +250,13 @@ public class PasswordManagerGUITest {
 		SWTBotShell editShell = bot.activeShell();
 		SWTBot editBot = new SWTBot(editShell.widget);
 		assertEquals(Labels.EDIT_TITLE, editShell.getText());
-		editBot.label(Labels.COLUMN_HEADERS[0]);
+		editBot.label(Labels.getColumnHeaders(0));
 		editBot.text("sito1");
-		editBot.label(Labels.COLUMN_HEADERS[1]);
+		editBot.label(Labels.getColumnHeaders(1));
 		editBot.text("user1");
-		editBot.label(Labels.COLUMN_HEADERS[2]);
+		editBot.label(Labels.getColumnHeaders(2));
 		editBot.text("password1");
-		editBot.label(Labels.COLUMN_HEADERS[3]);
+		editBot.label(Labels.getColumnHeaders(3));
 		editBot.dateTime();
 		editBot.button(Labels.CANCEL_LABEL);
 		editBot.button(Labels.OK_LABEL);
@@ -264,7 +265,8 @@ public class PasswordManagerGUITest {
 	@Test
 	public void testEditPasswordCancel() throws ParseException {
 		Date date1 = calendar.getTime();
-		passwordManager.addPassword(new Password("sito1", "user1", "password1", date1));
+		Password password = new Password("sito1", "user1", "password1", date1);
+		passwordManager.addPassword(password);
 		bot.button(Labels.REFRESH_LABEL).click();
 		SWTBotTable table = bot.table();
 		table.getTableItem(0).click();
@@ -281,7 +283,7 @@ public class PasswordManagerGUITest {
 		assertEquals("sito1", table.cell(0, 0));
 		assertEquals("user1", table.cell(0, 1));
 		assertEquals("password1", table.cell(0, 2));
-		assertEquals(Password.simpleDateFormat.format(date1), table.cell(0, 3));
+		assertEquals(password.getSimpleDateFormat().format(date1), table.cell(0, 3));
 	}
 
 	@Test
@@ -393,7 +395,9 @@ public class PasswordManagerGUITest {
 	@Test
 	public void testSearchNotFound() {
 		passwordManager.addPassword(new Password("site1", "user1", "password1", calendar.getTime()));
+		bot.textWithTooltip(Labels.SEARCH_HINT).setFocus();
 		bot.textWithTooltip(Labels.SEARCH_HINT).setText("we");
+		bot.table().setFocus();
 		assertEquals(0, bot.table().rowCount());
 	}
 
@@ -442,7 +446,8 @@ public class PasswordManagerGUITest {
 		calendar.add(Calendar.MONTH, 1);
 		calendar.add(Calendar.DAY_OF_MONTH, -1);
 		Date date3 = calendar.getTime();
-		passwordManager.addPassword(new Password("site2", "user1", "password1", date1));
+		Password password = new Password("site2", "user1", "password1", date1);
+		passwordManager.addPassword(password);
 		passwordManager.addPassword(new Password("site1", "user2", "password3", date2));
 		passwordManager.addPassword(new Password("site3", "user3", "password2", date3));
 		bot.button(Labels.REFRESH_LABEL).click();
@@ -450,38 +455,38 @@ public class PasswordManagerGUITest {
 		assertEquals("site2", table.cell(0, 0));
 		assertEquals("site1", table.cell(1, 0));
 		assertEquals("site3", table.cell(2, 0));
-		table.header(Labels.COLUMN_HEADERS[0]).click();
+		table.header(Labels.getColumnHeaders(0)).click();
 		assertEquals("site1", table.cell(0, 0));
 		assertEquals("site2", table.cell(1, 0));
 		assertEquals("site3", table.cell(2, 0));
-		table.header(Labels.COLUMN_HEADERS[0]).click();
+		table.header(Labels.getColumnHeaders(0)).click();
 		assertEquals("site3", table.cell(0, 0));
 		assertEquals("site2", table.cell(1, 0));
 		assertEquals("site1", table.cell(2, 0));
-		table.header(Labels.COLUMN_HEADERS[1]).click();
+		table.header(Labels.getColumnHeaders(1)).click();
 		assertEquals("user1", table.cell(0, 1));
 		assertEquals("user2", table.cell(1, 1));
 		assertEquals("user3", table.cell(2, 1));
-		table.header(Labels.COLUMN_HEADERS[1]).click();
+		table.header(Labels.getColumnHeaders(1)).click();
 		assertEquals("user3", table.cell(0, 1));
 		assertEquals("user2", table.cell(1, 1));
 		assertEquals("user1", table.cell(2, 1));
-		table.header(Labels.COLUMN_HEADERS[2]).click();
+		table.header(Labels.getColumnHeaders(2)).click();
 		assertEquals("password1", table.cell(0, 2));
 		assertEquals("password2", table.cell(1, 2));
 		assertEquals("password3", table.cell(2, 2));
-		table.header(Labels.COLUMN_HEADERS[2]).click();
+		table.header(Labels.getColumnHeaders(2)).click();
 		assertEquals("password3", table.cell(0, 2));
 		assertEquals("password2", table.cell(1, 2));
 		assertEquals("password1", table.cell(2, 2));
-		table.header(Labels.COLUMN_HEADERS[3]).click();
-		assertEquals(Password.simpleDateFormat.format(date1), table.cell(0, 3));
-		assertEquals(Password.simpleDateFormat.format(date2), table.cell(1, 3));
-		assertEquals(Password.simpleDateFormat.format(date3), table.cell(2, 3));
-		table.header(Labels.COLUMN_HEADERS[3]).click();
-		assertEquals(Password.simpleDateFormat.format(date3), table.cell(0, 3));
-		assertEquals(Password.simpleDateFormat.format(date2), table.cell(1, 3));
-		assertEquals(Password.simpleDateFormat.format(date1), table.cell(2, 3));
+		table.header(Labels.getColumnHeaders(3)).click();
+		assertEquals(password.getSimpleDateFormat().format(date1), table.cell(0, 3));
+		assertEquals(password.getSimpleDateFormat().format(date2), table.cell(1, 3));
+		assertEquals(password.getSimpleDateFormat().format(date3), table.cell(2, 3));
+		table.header(Labels.getColumnHeaders(3)).click();
+		assertEquals(password.getSimpleDateFormat().format(date3), table.cell(0, 3));
+		assertEquals(password.getSimpleDateFormat().format(date2), table.cell(1, 3));
+		assertEquals(password.getSimpleDateFormat().format(date1), table.cell(2, 3));
 	}
 
 	@Test

@@ -9,7 +9,7 @@ public class Labels {
 	public static final String ERROR_TITLE = "Error Occurred";
 	public static final String ADD_TITLE = "Add a new password";
 	public static final String EDIT_TITLE = "Edit an existing password";
-	public static final String[] COLUMN_HEADERS = {"Website", "Username", "Password", "Expiration"};
+	private static final String[] COLUMN_HEADERS = {"Website", "Username", "Password", "Expiration"};
 	public static final String EXPIRED_TITLE = "Expired Passwords";
 	public static final String LOGIN_TITLE = "Login or Register";
 	
@@ -36,4 +36,12 @@ public class Labels {
 	public static final String EXPIRED_ERROR_MSG = "Password has expired date";
 	public static final String REGISTER_ERROR_MSG = "User Registration Failed";
 	public static final String LOGIN_ERROR_MSG = "Login User Failed";
+	
+	public static String getColumnHeaders(int index) {
+		return COLUMN_HEADERS[index];
+	}
+	
+	public static int getColumnHeadersLength() {
+		return COLUMN_HEADERS.length;
+	}
 }
