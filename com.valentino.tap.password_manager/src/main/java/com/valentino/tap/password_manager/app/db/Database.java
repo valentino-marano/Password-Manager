@@ -12,7 +12,7 @@ public interface Database {
 	
 	public void save(Password password);
 
-	public boolean existsPassword(Password password);
+	public boolean existsPassword(String website, String username);
 
 	public void delete(Password password);
 
@@ -25,4 +25,6 @@ public interface Database {
 	public Database login(String username, String database, String password);
 
 	public Database register(String username, String database, String password);
+
+	public Password getPassword(String website, String username);
 }

@@ -25,6 +25,7 @@ import com.valentino.tap.password_manager.app.PasswordManager;
 
 public class EditDialog extends Dialog {
 
+	private static final TimeZone TIME_ZONE = TimeZone.getTimeZone("Europe/Rome");
 	private PasswordManager passwordManager;
 	private Shell shell;
 
@@ -51,12 +52,12 @@ public class EditDialog extends Dialog {
 	}
 	
 	private boolean checkExpiration() {
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+		Calendar calendar = Calendar.getInstance(TIME_ZONE, Locale.ITALY);
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
-		expiration = Password.createDate(expirationField.getYear(), expirationField.getMonth(), expirationField.getDay());
+		expiration = createDate(expirationField.getYear(), expirationField.getMonth(), expirationField.getDay());
 		if (expiration.before(calendar.getTime())) {
 			/* MessageBox attualmente non testabile con SWTBot
 			 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
@@ -101,7 +102,7 @@ public class EditDialog extends Dialog {
 		String oldUser = password.getUsername();
 		userField.setText(oldUser);
 		passwordField.setText(password.getPassw());
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+		Calendar calendar = Calendar.getInstance(TIME_ZONE, Locale.ITALY);
 		calendar.setTime(password.getDateExpiration());
 		expirationField.setDay(calendar.get(Calendar.DAY_OF_MONTH));
 		expirationField.setMonth(calendar.get(Calendar.MONTH));
@@ -116,7 +117,7 @@ public class EditDialog extends Dialog {
 					password.setPassw(passwordField.getText());
 					password.setExpiration(expiration);
 
-					if(passwordManager.existsPassword(password) && !(password.getWebsite().equals(oldWebsite) && password.getUsername().equals(oldUser))) {
+					if(passwordManager.existsPassword(websiteField.getText(), userField.getText()) && !(password.getWebsite().equals(oldWebsite) && password.getUsername().equals(oldUser))) {
 						/* MessageBox attualmente non testabile con SWTBot
 						 * Vedi bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164192
 						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK)
@@ -190,5 +191,11 @@ public class EditDialog extends Dialog {
 				display.sleep();
 			}
 		}
+	}
+	
+	public static Date createDate(int year, int month, int day) {
+		Calendar calendar = Calendar.getInstance(TIME_ZONE, Locale.ITALY);
+		calendar.set(year, month, day);
+		return calendar.getTime();
 	}
 }

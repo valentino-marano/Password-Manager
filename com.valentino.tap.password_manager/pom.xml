@@ -245,10 +245,11 @@
 				<version>1.4.3</version>
                 <configuration>
 					<targetClasses>
-						<param>${project.groupId}.${project.name}.app*</param>
+						<param>${project.groupId}.${project.name}.app.Password*</param>
+						<param>${project.groupId}.${project.name}.app.db.*</param>
 					</targetClasses>
 					<targetTests>
-						<param>${project.groupId}.${project.name}.test*</param>
+						<param>${project.groupId}.${project.name}.test.db.*</param>
 					</targetTests>
 					<mutators>
 						<mutator>ALL</mutator>
@@ -259,8 +260,7 @@
     					<avoidCallsTo>org.slf4j</avoidCallsTo>
     					<avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
 					</avoidCallsTo>
-					<excludedClasses>${project.groupId}.${project.name}.app.Application*</excludedClasses>
-					<withHistory>true</withHistory>
+					<withHistory>false</withHistory>
 				</configuration>
 			</plugin>
 			<plugin>

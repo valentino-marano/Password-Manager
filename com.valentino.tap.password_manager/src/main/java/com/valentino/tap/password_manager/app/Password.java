@@ -1,11 +1,7 @@
 package com.valentino.tap.password_manager.app;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
@@ -74,12 +70,6 @@ public class Password {
 		return new ObjectId(key);
 	}
 	
-	public static Date createDate(int year, int month, int day) {
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
-		calendar.set(year, month, day);
-		return calendar.getTime();
-	}
-
 	public SimpleDateFormat getSimpleDateFormat() {
 		return this.simpleDateFormat;
 	}

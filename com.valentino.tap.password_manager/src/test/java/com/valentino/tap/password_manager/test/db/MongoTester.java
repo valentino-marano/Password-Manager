@@ -29,8 +29,8 @@ public class MongoTester implements SUT {
 	}
 
 	@Override
-	public boolean existsPassword(Password password) {
-		return mongoDatabase.existsPassword(password);
+	public boolean existsPassword(String website, String username) {
+		return mongoDatabase.existsPassword(website, username);
 	}
 
 	@Override
@@ -45,5 +45,10 @@ public class MongoTester implements SUT {
 	@Override
 	public List<Password> searchPasswords(String pattern) {
 		return mongoDatabase.getSearchedPasswords(pattern);
+	}
+
+	@Override
+	public Password getPassword(String website, String username) {
+		return mongoDatabase.getPassword(website, username);
 	}
 }

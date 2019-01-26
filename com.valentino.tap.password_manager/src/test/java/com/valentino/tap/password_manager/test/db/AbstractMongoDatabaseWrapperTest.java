@@ -1,5 +1,6 @@
 package com.valentino.tap.password_manager.test.db;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -27,7 +28,9 @@ public abstract class AbstractMongoDatabaseWrapperTest extends AbstractTest {
 	public void testPasswordIsSaved() {
 		Password password = new Password("site1", "user1", "password1", calendar.getTime());
 		((MongoTester) sut).save(password);
-		assertTrue(sut.existsPassword(password));
+		assertTrue(sut.existsPassword("site1", "user1"));
+		assertEquals("password1", sut.getPassword("site1", "user1").getPassw());
+		assertEquals(calendar.getTime(), sut.getPassword("site1", "user1").getDateExpiration());
 	}
 	
 	@Test
@@ -37,8 +40,7 @@ public abstract class AbstractMongoDatabaseWrapperTest extends AbstractTest {
 		mongoTestHelper.addPassword(password1);
 		mongoTestHelper.addPassword(password2);
 		((MongoTester) sut).delete(password1);
-		assertFalse(sut.existsPassword(password1));
-		assertTrue(sut.existsPassword(password2));
+		assertFalse(sut.existsPassword("site1", "user1"));
+		assertTrue(sut.existsPassword("site2", "user2"));
 	}
-
 }

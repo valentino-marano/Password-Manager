@@ -10,9 +10,11 @@ public interface SUT {
 
 	List<Password> getPasswordsByWebSite(String website);
 
-	boolean existsPassword(Password password);
+	boolean existsPassword(String website, String username);
 	
 	void updatePassword(Password password);
 
 	List<Password> searchPasswords(String pattern);
+	
+	Password getPassword(String website, String username);
 }

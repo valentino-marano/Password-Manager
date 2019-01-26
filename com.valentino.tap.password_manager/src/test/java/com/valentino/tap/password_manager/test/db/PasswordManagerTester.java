@@ -29,8 +29,8 @@ public class PasswordManagerTester implements SUT {
 	}
 
 	@Override
-	public boolean existsPassword(Password password) {
-		return passwordManager.existsPassword(password);
+	public boolean existsPassword(String website, String username) {
+		return passwordManager.existsPassword(website, username);
 	}
 
 	@Override
@@ -45,5 +45,10 @@ public class PasswordManagerTester implements SUT {
 	@Override
 	public List<Password> searchPasswords(String pattern) {
 		return passwordManager.getSearchedPasswords(pattern);
+	}
+
+	@Override 
+	public Password getPassword(String website, String username) {
+		return passwordManager.getPassword(website, username);
 	}
 }

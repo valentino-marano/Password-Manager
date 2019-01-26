@@ -20,20 +20,21 @@ public class PasswordManager {
 	}
 	
 	public boolean addPassword(Password password) {
-		if (existsPassword(password))
+		if (existsPassword(password.getWebsite(), password.getUsername()))
 			return false;
 		
 		database.save(password);
 		return true;	
 	}
 
-	public boolean existsPassword(Password password) {
-		return database.existsPassword(password);
+	public boolean existsPassword(String website, String username) {
+		return database.existsPassword(website, username);
 	}
 	
 	public boolean deletePassword(Password password) {
-		if (!existsPassword(password))
+		if (!existsPassword(password.getWebsite(), password.getUsername()))
 			return false;
+		
 		database.delete(password);
 		return true;
 	}
@@ -44,5 +45,9 @@ public class PasswordManager {
 
 	public List<Password> getSearchedPasswords(String text) {
 		return database.getSearchedPasswords(text);
+	}
+
+	public Password getPassword(String website, String username) {
+		return database.getPassword(website, username);
 	}
 }

@@ -8,7 +8,6 @@ import java.util.stream.StreamSupport;
 
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
-
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
@@ -38,8 +37,6 @@ public class MongoDatabaseWrapper implements Database {
 	
 	public List<Password> getPasswordsByWebSite(String website) {
 		Iterable<Password> iterable = passwords.find("{website: {$regex: #}}", website).as(Password.class);
-		// TODO
-		//		Iterable<Password> iterable = passwords.find("{website: #}", Pattern.compile(website)).as(Password.class);
 		return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
 	}
 
@@ -48,9 +45,17 @@ public class MongoDatabaseWrapper implements Database {
 		passwords.save(password);
 	}
 
-	public boolean existsPassword(Password password) {
-		return passwords.find("{website: #, username: #}", password.getWebsite(), password.getUsername()).as(Password.class).hasNext();
+	public boolean existsPassword(String website, String username) {
+		return (getPassword(website, username) != null);
 	}
+	
+	public Password getPassword(String website, String username) {
+		Iterable<Password> iterable = passwords.find("{website: #, username: #}", website, username).as(Password.class);
+		List<Password> list = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+		if (list.isEmpty())
+			return null;
+		return list.get(0);
+	}	
 
 	@Override
 	public void delete(Password password) {
@@ -65,8 +70,6 @@ public class MongoDatabaseWrapper implements Database {
 	@Override
 	public List<Password> getSearchedPasswords(String pattern) {
 		Iterable<Password> iterable = passwords.find("{$or:[{website: {$regex: #}}, {username: {$regex: #}}]}", pattern, pattern).as(Password.class);
-		// TODO
-		//		Iterable<Password> iterable = passwords.find("{$or:[{website: #}, {username: #}]}", Pattern.compile(pattern), Pattern.compile(pattern)).as(Password.class);
 		return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
 	}
 
