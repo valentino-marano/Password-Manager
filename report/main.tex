@@ -1,0 +1,70 @@
+\documentclass[12pt, a4papaer, fleqn, twoside]{book}
+\setlength{\headheight}{10pt}
+\usepackage{hyperref}
+\usepackage[english]{babel}
+\usepackage{calc}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{cleveref}
+\usepackage{enumitem} % To manage enum, itemize, description and similar environments
+\usepackage{fancyhdr}
+\usepackage[Lenny]{fncychap}
+\usepackage[T1]{fontenc}
+\usepackage[bottom]{footmisc}
+\usepackage[textheight=654pt, left=2.5cm, right=2.5cm]{geometry} % To edit page size, margins, ...
+\usepackage{graphicx}
+\usepackage[none]{hyphenat} % To avoid word split
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+
+\usepackage{arydshln}
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=black}
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+\interfootnotelinepenalty =10000
+\linespread{1.5}
+
+\begin{document}
+\input{macros.tex}
+\title{Tecniche Avanzate di Programmazione - Password Manager}
+\author{Valentino Marano - \emph{\href{mailto:valentino.marano@stud.unifi.it}{\textcolor{black}{valentino.marano@stud.unifi.it}}}}
+\date{4 Febbraio 2019}
+\begin{titlepage}
+	\begin{picture}(30,0)
+		\put(100,50){\makebox(0,0)[rt]{\includegraphics[width=6cm]{Immagini/Logo_Unifi.jpg}}}
+		\put(450,30){\makebox(0,0)[rt]{\textbf{CORSO DI LAUREA MAGISTRALE}}}
+		\put(450,10){\makebox(0,0)[rt]{\textbf{IN INFORMATICA}}}
+	\end{picture}
+
+	\makeatletter	
+	\begin{center}
+		\leavevmode
+		\vspace{50pt}
+		\Large \textbf{\mbox{\@title}}\\
+		\@author \\
+		\large \@date
+	\end{center}
+	\makeatother
+\end{titlepage}
+
+\newpage \setcounter{page}{1}
+
+\frontmatter
+\tableofcontents
+\let\cleardoublepage=\clearpage
+\mainmatter
+\pagestyle{fancy}
+
+\lhead{\leftmark}
+\chead{}
+\rhead{}
+\lfoot{}
+\lfoot{Valentino Marano}
+\cfoot{\thepage}
+\rfoot{Matricola 5952567}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\raggedbottom
+\input{relazione.tex}
+\end{document}

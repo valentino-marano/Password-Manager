@@ -79,7 +79,7 @@ public class PasswordManagerGUI {
 			item.setText(0, password.getWebsite());
 			item.setText(1, password.getUsername());
 			item.setText(2, password.getPassw());
-			item.setText(3, password.getExpiration());
+			item.setText(3, Labels.simpleDateFormat.format(password.getDateExpiration()));
 			if (password.getDateExpiration().before(today)) {
 				LOGGER.info(password.getDateExpiration().toString());
 				expiredPasswords = true;
@@ -190,7 +190,7 @@ public class PasswordManagerGUI {
 				else if (selectedColumn == table.getColumn(2)) 
 					comparator = Comparator.comparing(Password::getPassw);
 				else if (selectedColumn == table.getColumn(3)) 
-					comparator = Comparator.comparing(Password::getExpiration);
+					comparator = Comparator.comparing(Password::getDateExpiration);
 
 				if (reversedOrder)
 					comparator = comparator.reversed();

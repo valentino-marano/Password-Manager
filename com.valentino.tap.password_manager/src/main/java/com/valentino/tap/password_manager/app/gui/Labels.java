@@ -1,5 +1,7 @@
 package com.valentino.tap.password_manager.app.gui;
 
+import java.text.SimpleDateFormat;
+
 public class Labels {
 	
 	private Labels() {}
@@ -36,6 +38,8 @@ public class Labels {
 	public static final String EXPIRED_ERROR_MSG = "Password has expired date";
 	public static final String REGISTER_ERROR_MSG = "User Registration Failed";
 	public static final String LOGIN_ERROR_MSG = "Login User Failed";
+	
+	public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	
 	public static String getColumnHeaders(int index) {
 		return COLUMN_HEADERS[index];

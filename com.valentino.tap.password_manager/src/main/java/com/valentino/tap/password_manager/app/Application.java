@@ -14,6 +14,11 @@ import com.valentino.tap.password_manager.app.gui.PasswordManagerGUI;
 public class Application {
 	static final Logger LOGGER = Logger.getLogger(Application.class);
 
+	/********** main() **********/
+	/**
+		@brief Main method, it shows the login GUI and after correct login/registration shows main GUI
+		@throws UnknownHostException if mongo host cannot be reached
+	 */
 	public static void main(String[] args) throws UnknownHostException {
 		ServerAddress serverAddress = new ServerAddress("localhost", 27017);
 		MongoClient mongoAdmin = new MongoClient(serverAddress);
