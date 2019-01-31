@@ -13,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.valentino.tap.password_manager.app.Password;
-import com.valentino.tap.password_manager.app.gui.Labels;
 
 public abstract class AbstractTest {
 
@@ -116,7 +115,7 @@ public abstract class AbstractTest {
 		assertEquals("site2", allPasswords.get(0).getWebsite());
 		assertEquals("user2", allPasswords.get(0).getUsername());
 		assertEquals("password2", allPasswords.get(0).getPassw());
-		assertEquals(Labels.simpleDateFormat.format(date1), Labels.simpleDateFormat.format(allPasswords.get(0).getDateExpiration()));
+		assertEquals(date1, allPasswords.get(0).getDateExpiration());
 	}
 
 	@Test

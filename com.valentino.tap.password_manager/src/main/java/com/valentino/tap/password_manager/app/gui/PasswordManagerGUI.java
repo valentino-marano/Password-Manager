@@ -1,5 +1,6 @@
 package com.valentino.tap.password_manager.app.gui;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
@@ -40,6 +41,7 @@ public class PasswordManagerGUI {
 	private boolean reversedOrder = false;
 	private boolean expiredPasswords;
 	private List<Password> passwords;
+	private SimpleDateFormat simpleDateFormat = new Labels().getSimpledateformat();
 	static final Logger LOGGER = Logger.getLogger(PasswordManagerGUI.class);
 
 	public PasswordManagerGUI(PasswordManager passwordManager) {
@@ -79,7 +81,7 @@ public class PasswordManagerGUI {
 			item.setText(0, password.getWebsite());
 			item.setText(1, password.getUsername());
 			item.setText(2, password.getPassw());
-			item.setText(3, Labels.simpleDateFormat.format(password.getDateExpiration()));
+			item.setText(3, simpleDateFormat.format(password.getDateExpiration()));
 			if (password.getDateExpiration().before(today)) {
 				LOGGER.info(password.getDateExpiration().toString());
 				expiredPasswords = true;

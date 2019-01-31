@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -40,6 +41,7 @@ public class PasswordManagerGUITest {
 
 	private static Shell shell;
 	private static PasswordManager passwordManager;
+	private SimpleDateFormat simpleDateFormat = new Labels().getSimpledateformat();
 
 	private final static CyclicBarrier swtBarrier = new CyclicBarrier(2);
 
@@ -142,11 +144,11 @@ public class PasswordManagerGUITest {
 		assertEquals("sito1", table.cell(0, 0));
 		assertEquals("user1", table.cell(0, 1));
 		assertEquals("password1", table.cell(0, 2));
-		assertEquals(Labels.simpleDateFormat.format(date1), table.cell(0, 3));
+		assertEquals(simpleDateFormat.format(date1), table.cell(0, 3));
 		assertEquals("sito2", table.cell(1, 0));
 		assertEquals("user2", table.cell(1, 1));
 		assertEquals("password2", table.cell(1, 2));
-		assertEquals(Labels.simpleDateFormat.format(nextMonth), table.cell(1, 3));
+		assertEquals(simpleDateFormat.format(nextMonth), table.cell(1, 3));
 	}
 
 	@Test
@@ -283,7 +285,7 @@ public class PasswordManagerGUITest {
 		assertEquals("sito1", table.cell(0, 0));
 		assertEquals("user1", table.cell(0, 1));
 		assertEquals("password1", table.cell(0, 2));
-		assertEquals(Labels.simpleDateFormat.format(date1), table.cell(0, 3));
+		assertEquals(simpleDateFormat.format(date1), table.cell(0, 3));
 	}
 
 	@Test
@@ -480,13 +482,13 @@ public class PasswordManagerGUITest {
 		assertEquals("password2", table.cell(1, 2));
 		assertEquals("password1", table.cell(2, 2));
 		table.header(Labels.getColumnHeaders(3)).click();
-		assertEquals(Labels.simpleDateFormat.format(date1), table.cell(0, 3));
-		assertEquals(Labels.simpleDateFormat.format(date2), table.cell(1, 3));
-		assertEquals(Labels.simpleDateFormat.format(date3), table.cell(2, 3));
+		assertEquals(simpleDateFormat.format(date1), table.cell(0, 3));
+		assertEquals(simpleDateFormat.format(date2), table.cell(1, 3));
+		assertEquals(simpleDateFormat.format(date3), table.cell(2, 3));
 		table.header(Labels.getColumnHeaders(3)).click();
-		assertEquals(Labels.simpleDateFormat.format(date3), table.cell(0, 3));
-		assertEquals(Labels.simpleDateFormat.format(date2), table.cell(1, 3));
-		assertEquals(Labels.simpleDateFormat.format(date1), table.cell(2, 3));
+		assertEquals(simpleDateFormat.format(date3), table.cell(0, 3));
+		assertEquals(simpleDateFormat.format(date2), table.cell(1, 3));
+		assertEquals(simpleDateFormat.format(date1), table.cell(2, 3));
 	}
 
 	@Test

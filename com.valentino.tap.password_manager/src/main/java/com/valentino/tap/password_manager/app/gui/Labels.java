@@ -4,8 +4,6 @@ import java.text.SimpleDateFormat;
 
 public class Labels {
 	
-	private Labels() {}
-	
 	// Titles & Headers
 	public static final String FRAME_TITLE = "Password Manager";
 	public static final String ERROR_TITLE = "Error Occurred";
@@ -39,7 +37,7 @@ public class Labels {
 	public static final String REGISTER_ERROR_MSG = "User Registration Failed";
 	public static final String LOGIN_ERROR_MSG = "Login User Failed";
 	
-	public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+	private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	
 	public static String getColumnHeaders(int index) {
 		return COLUMN_HEADERS[index];
@@ -47,5 +45,9 @@ public class Labels {
 	
 	public static int getColumnHeadersLength() {
 		return COLUMN_HEADERS.length;
+	}
+
+	public SimpleDateFormat getSimpledateformat() {
+		return simpleDateFormat;
 	}
 }
